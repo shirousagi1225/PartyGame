@@ -491,7 +491,7 @@ public class NetworkDebugStart : Fusion.Behaviour {
     if (includesServerStart && AlwaysShowStats && serverMode != GameMode.Shared) {
       FusionStats.Create(runner: _server, screenLayout: FusionStats.DefaultLayouts.Left, objectLayout: FusionStats.DefaultLayouts.Left);
     }
-  }
+    }
 
   [BehaviourButtonAction("Add Additional Client", conditionMember: nameof(CanAddClients))]
   public void AddClient() {

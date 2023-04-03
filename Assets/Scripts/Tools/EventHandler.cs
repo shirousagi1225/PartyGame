@@ -1,3 +1,4 @@
+using Fusion;
 using System;
 using UnityEngine;
 using UnityEngine.UI;
@@ -22,9 +23,21 @@ public static class EventHandler
         ShowSecUIEvent?.Invoke(canvas,canOpenSecUI, canSwitch);
     }
 
-    public static event Action StartGameEvent;
-    public static void CallStartGameEvent()
+    public static event Action<NetworkRunner,int> StartGameEvent;
+    public static void CallStartGameEvent(NetworkRunner runner,int playerCount)
     {
-        StartGameEvent?.Invoke();
+        StartGameEvent?.Invoke(runner,playerCount);
+    }
+
+    public static event Action RemakeRoundEvent;
+    public static void CallRemakeRoundEvent()
+    {
+        RemakeRoundEvent?.Invoke();
+    }
+
+    public static event Action PlayerListUpdateEvent;
+    public static void CallPlayerListUpdateEvent()
+    {
+        PlayerListUpdateEvent?.Invoke();
     }
 }

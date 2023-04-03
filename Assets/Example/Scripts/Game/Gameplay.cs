@@ -29,7 +29,7 @@ namespace Example
 			events.OnReliableData.AddListener(OnDataReceived);
 			events.PlayerJoined.AddListener(OnPlayerJoined);
 			events.PlayerLeft.AddListener(OnPlayerLeft);
-		}
+        }
 
 		// PRIVATE METHODS
 

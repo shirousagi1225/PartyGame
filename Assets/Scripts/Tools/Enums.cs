@@ -1,9 +1,29 @@
 public enum WeaponName
 {
-    None,Fist,Pan,Jumprope
+    None,Pan,Jumprope
 }
 
 public enum PropsName
 {
     None, Toypistol
+}
+
+public enum ClothesName
+{
+    None
+}
+
+public enum FeatureName
+{
+    None
+}
+
+public enum ProbabilityType
+{
+    None, Clothes, Feature, Weapon
+}
+
+public enum PairState
+{
+    Lobby, CreatingRoom, InRoom
 }
