@@ -1,6 +1,6 @@
 # PartyGame
 
-## 距上次GIT更新功能(4/15)
+## 距上次GIT更新功能(04/03)
 1.編寫連線功能(LobbyManager：建立房間/加入房間/進入遊戲 未完成)
 2.編寫開始介面功能(RoomListUI/CreateRoomUI：UI邏輯 未完成)
 3.編寫組隊大廳介面功能(InRoomUI：UI邏輯 未完成)
@@ -9,7 +9,7 @@
 6.編寫網路物件池功能(NetworkObjectPool/NetworkObjectPoolRoot)
 7.編寫機率計算功能(AlgorithmManager：通用機率)
 
-## 距上次GIT更新功能(4/15)
+## 距上次GIT更新功能(04/15)
 1.編寫玩家行為功能
 - ThirdPersonPlayer：
     - 拾取/丟棄物品 未完成
