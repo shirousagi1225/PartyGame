@@ -2,11 +2,17 @@
 
 ## 距上次GIT更新功能(04/03)
 1.編寫連線功能(LobbyManager：建立房間/加入房間/進入遊戲 未完成)
+
 2.編寫開始介面功能(RoomListUI/CreateRoomUI：UI邏輯 未完成)
+
 3.編寫組隊大廳介面功能(InRoomUI：UI邏輯 未完成)
+
 4.編寫物件生成功能(SpawnManager：生成玩家/ObjectPoolManager：生成武器 未完成)
+
 5.編寫資料結構(PlayerNetworkData：玩家資料/WeaponDataList_SO：武器資料)
+
 6.編寫網路物件池功能(NetworkObjectPool/NetworkObjectPoolRoot)
+
 7.編寫機率計算功能(AlgorithmManager：通用機率)
 
 ## 距上次GIT更新功能(04/15)
