@@ -17,4 +17,6 @@ public class TaskDataList_SO : ScriptableObject
 public class TaskDetails
 {
     public FeatureName featureName;
+    public string featureText;
+    public Sprite featureSprite;
 }

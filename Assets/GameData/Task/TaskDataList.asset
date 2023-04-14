@@ -13,4 +13,19 @@ MonoBehaviour:
   m_Name: TaskDataList
   m_EditorClassIdentifier: 
   taskDetailsList:
-  - featureName: 0
+  - featureName: 1
+    featureText: "\u7537\u5B69"
+  - featureName: 2
+    featureText: "\u5973\u5B69"
+  - featureName: 3
+    featureText: "\u8C93\u9762\u5177"
+  - featureName: 4
+    featureText: "\u5154\u9762\u5177"
+  - featureName: 5
+    featureText: "\u4E0A\u886301"
+  - featureName: 6
+    featureText: "\u4E0A\u886302"
+  - featureName: 7
+    featureText: "\u77ED\u8932"
+  - featureName: 8
+    featureText: "\u88D9\u5B50"

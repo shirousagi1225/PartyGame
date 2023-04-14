@@ -9,7 +9,7 @@ public class RoomCell : MonoBehaviour
     private LobbyManager lobbyManager=null;
 
     [SerializeField] private Text roomNameText = null;
-    [SerializeField] private Button joinBtn=null;
+    //[SerializeField] private Button joinBtn=null;
 
     public void SetInfo(LobbyManager lobbyManager,string roomName)
     {

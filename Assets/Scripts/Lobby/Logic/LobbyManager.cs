@@ -45,7 +45,11 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
         });
 
         if (result.Ok)
+        {
+            inRoomUI.SetRoomName(roomName);
             SetPairState(PairState.InRoom);
+        }
+            
         else
             Debug.LogError($"Failed to Start: {result.ShutdownReason}");
     }
@@ -62,7 +66,10 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
         });
 
         if (result.Ok)
+        {
+            inRoomUI.SetRoomName(roomName);
             SetPairState(PairState.InRoom);
+        }
         else
             Debug.LogError($"Failed to Start: {result.ShutdownReason}");
     }

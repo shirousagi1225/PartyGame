@@ -70,3 +70,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _interpolationDataSource: 0
+  _playerName: 
+  _isReady:
+    _value: 0
+  maxHp: 3
+  _hp: 0
+  _clothes: 0
+  _task: 0

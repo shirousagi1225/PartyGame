@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Fusion;
 
-public class GameManager : Singleton<GameManager>
+public class GameManager : Singleton<GameManager>, IPanel
 {
     [SerializeField] private NetworkRunner runner=null;
 
@@ -21,6 +21,7 @@ public class GameManager : Singleton<GameManager>
         }
     }
 
+    [SerializeField] private CanvasGroup playerCanvas = null;
     public string playerName = null;
     public Dictionary<PlayerRef, PlayerNetworkData> playerDict = new Dictionary<PlayerRef, PlayerNetworkData>();
 
@@ -28,6 +29,24 @@ public class GameManager : Singleton<GameManager>
     {
         base.Awake();
         Runner.ProvideInput = true;
+        DontDestroyOnLoad(playerCanvas.gameObject);
+    }
+
+    private void OnEnable()
+    {
+        EventHandler.StartGameEvent += OnStartGameEvent;
+    }
+
+    private void OnDisable()
+    {
+        EventHandler.StartGameEvent -= OnStartGameEvent;
+    }
+
+    //開始遊戲事件
+    private void OnStartGameEvent(NetworkRunner runner, int playerCount)
+    {
+        DisplayPanel(true);
+        //Debug.Log("open");
     }
 
     private bool CheckAllPlayerIsReady()
@@ -59,5 +78,12 @@ public class GameManager : Singleton<GameManager>
         {
             playerNetworkData.SetPlayerName_RPC(playerName);
         }
+    }
+
+    public void DisplayPanel(bool value)
+    {
+        playerCanvas.alpha = value ? 1 : 0;
+        playerCanvas.interactable = value;
+        playerCanvas.blocksRaycasts = value;
     }
 }

@@ -21,7 +21,13 @@ namespace Example
 		[SerializeField][Tooltip("Events which trigger look rotation update of KCC.")]
 		private ELookRotationUpdateSource _lookRotationUpdateSource = ELookRotationUpdateSource.Jump | ELookRotationUpdateSource.Movement | ELookRotationUpdateSource.MouseHold;
 
-		[Networked][Accuracy(0.00001f)]
+		[SerializeField] private GameObject weaponCol;
+        public Transform weaponTrans;
+        [SerializeField] private Vector3 colStartPos;
+        [SerializeField] private Vector3 colEndPos;
+        [SerializeField] private float colRadius;
+
+        [Networked][Accuracy(0.00001f)]
 		private Vector2 _pendingLookRotationDelta { get; set; }
 		[Networked][Accuracy(0.00001f)]
 		private float   _facingMoveRotation { get; set; }
@@ -194,23 +200,63 @@ namespace Example
 		// 3.
 		protected override void ProcessLateFixedInput()
 		{
-			// Executed after HitboxManager. Process other non-movement actions like shooting.
+            // Executed after HitboxManager. Process other non-movement actions like shooting.
 
-			if (Input.WasActivated(EGameplayInputAction.LMB) == true)
-			{
-				// Left mouse button action
-			}
+            //if (Object.HasStateAuthority)
+            if (GameManager.Instance.Runner.GameMode == GameMode.Host)
+            {
+                if (Input.WasActivated(EGameplayInputAction.LMB) == true)
+                {
+                    weaponCol.gameObject.SetActive(true);
 
-			if (Input.WasActivated(EGameplayInputAction.RMB) == true)
-			{
-				// Right mouse button action
-			}
+                    var centerPos = new Vector3((colEndPos.x - colStartPos.x) / 2, (colEndPos.y - colStartPos.y) / 2, (colEndPos.z - colStartPos.z) / 2);
+                    var colliders = Physics.OverlapSphere(transform.position+ centerPos, colRadius, 1 << LayerMask.NameToLayer("Attackcol"));
+                    //Debug.Log(colliders[0] + "¡G"+colliders.Length);
 
-			if (Input.WasActivated(EGameplayInputAction.MMB) == true)
-			{
-				// Middle mouse button action
-			}
-		}
+                    if (colliders.Length >1 && colliders[1].TryGetComponent<NetworkObject>(out NetworkObject localPlayer))
+                    {
+                        Debug.Log(localPlayer + "¡G" + colliders.Length);
+						Debug.Log(localPlayer.InputAuthority);
+						//Debug.Log(localPlayer.StateAuthority);
+
+                    if (GameManager.Instance.playerDict.TryGetValue(localPlayer.InputAuthority, out PlayerNetworkData playerNetworkData))
+                            playerNetworkData.TakeDamage_RPC(1);
+                    }
+
+                    weaponCol.gameObject.SetActive(false);
+                    Debug.Log("Attack");
+                }
+
+                if (Input.WasActivated(EGameplayInputAction.RMB) == true)
+                {
+                    // Right mouse button action
+                }
+
+                if (Input.WasActivated(EGameplayInputAction.MMB) == true)
+                {
+                    // Middle mouse button action
+                }
+
+                if (Input.WasActivated(EGameplayInputAction.Invisibility) == true)
+                {
+                    Debug.Log("Invisibility");
+                }
+
+                //¬B¨ú¥\¯à
+                /*if (Input.WasActivated(EGameplayInputAction.PickUp) == true)
+                {
+                    Weapon weapon;
+                    var colliders = Physics.OverlapCapsule(gameObject.transform.position+colStartPos, gameObject.transform.position + colEndPos, colRadius, 1 << LayerMask.NameToLayer("Weapon"));
+                    Debug.Log(colliders.Length);
+
+                    if (colliders.Length!=0 && (weapon=colliders[0].GetComponentInParent<Weapon>()))
+                    {
+                        weapon.PickUpWeapon(Object);
+                        Debug.Log("PickUp");
+                    } 
+                }*/
+            }
+        }
 
 		// 4.
 		protected override void ProcessRenderInput()
@@ -400,5 +446,16 @@ namespace Example
 			MouseMovement = 1 << 3, // Look rotation is updated on mouse move
 			Dash          = 1 << 4, // Look rotation is updated on dash
 		}
-	}
+
+        private void OnDrawGizmosSelected()
+        {
+            var centerPos = new Vector3((colEndPos.x-colStartPos.x)/2, (colEndPos.y-colStartPos.y) / 2, (colEndPos.z-colStartPos.z)/ 2);
+
+			Gizmos.DrawWireSphere(gameObject.transform.position+ centerPos, colRadius);
+
+            /*Gizmos.color = Color.red;
+			Gizmos.DrawLine(gameObject.transform.position + colStartPos, gameObject.transform.position + colEndPos);
+            Gizmos.DrawWireSphere(gameObject.transform.position + centerPos, colRadius);*/
+        }
+    }
 }

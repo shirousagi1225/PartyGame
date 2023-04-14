@@ -17,5 +17,7 @@ public class WeaponDataList_SO : ScriptableObject
 public class WeaponDetails
 {
     public WeaponName weaponName;
-    public GameObject weaponType;
+    public GameObject weaponProp;
+    public GameObject weapon;
+    public Sprite weaponSprite;
 }

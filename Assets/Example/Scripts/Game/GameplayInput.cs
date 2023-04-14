@@ -13,7 +13,9 @@ namespace Example
 		Sprint       = 5,
 		LeftTrigger  = 6,
 		RightTrigger = 7,
-	}
+        Invisibility = 8,
+        PickUp = 9,
+    }
 
 	/// <summary>
 	/// Input structure polled by Fusion. This is sent over network and processed by server, keep it optimized and remove unused data.
@@ -40,7 +42,9 @@ namespace Example
 		public bool Sprint       { get { return Actions.IsSet(EGameplayInputAction.Sprint);       } set { Actions.Set(EGameplayInputAction.Sprint,       value); } }
 		public bool LeftTrigger  { get { return Actions.IsSet(EGameplayInputAction.LeftTrigger);  } set { Actions.Set(EGameplayInputAction.LeftTrigger,  value); } }
 		public bool RightTrigger { get { return Actions.IsSet(EGameplayInputAction.RightTrigger); } set { Actions.Set(EGameplayInputAction.RightTrigger, value); } }
-	}
+        public bool Invisibility { get { return Actions.IsSet(EGameplayInputAction.Invisibility); } set { Actions.Set(EGameplayInputAction.Invisibility, value); } }
+        public bool PickUp { get { return Actions.IsSet(EGameplayInputAction.PickUp); } set { Actions.Set(EGameplayInputAction.PickUp, value); } }
+    }
 
 	public static class GameplayInputActionExtensions
 	{

@@ -38,11 +38,11 @@ public class NetworkObjectPoolRoot : MonoBehaviour,INetworkObjectPool
 
             newObj.gameObject.SetActive(true);
 
-            foreach (var prefabs in _poolByPrefab.Keys)
+            /*foreach (var prefabs in _poolByPrefab.Keys)
                 Debug.Log("prefabs : "+prefabs+ _poolByPrefab.Count);
 
             foreach (var instance in _poolByInstance.Keys)
-                Debug.Log("instance : "+instance+ _poolByInstance.Count);
+                Debug.Log("instance : "+instance+ _poolByInstance.Count);*/
             
             return newObj;
         }
@@ -63,6 +63,7 @@ public class NetworkObjectPoolRoot : MonoBehaviour,INetworkObjectPool
                 pool.ReturnToPool(instance);
                 instance.gameObject.SetActive(false);
                 instance.transform.SetParent(transform, false);
+                //Debug.Log("In to pool");
             }
             else
             {

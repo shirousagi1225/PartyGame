@@ -1,0 +1,84 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &6406990657065451801
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6406990657065451796}
+  - component: {fileID: 6406990657065451799}
+  - component: {fileID: 6406990657065451798}
+  m_Layer: 0
+  m_Name: SafeAreaNetworkData
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6406990657065451796
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6406990657065451801}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6406990657065451799
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6406990657065451801}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObjectInterest: 1
+  DefaultInterestGroups: []
+  DestroyWhenStateAuthorityLeaves: 0
+  AllowStateAuthorityOverride: 1
+  AoiPositionSource: {fileID: 0}
+  Flags: 2305
+  NetworkGuid:
+    RawGuidValue: eaaefece617a30442afc39b76c3c1779
+  NestedObjects: []
+  NetworkedBehaviours:
+  - {fileID: 6406990657065451798}
+  SimulationBehaviours: []
+--- !u!114 &6406990657065451798
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6406990657065451801}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7e7989993e633c04dbb5616602ecf20c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _interpolationDataSource: 0
+  _safeAreaDict:
+    _items: []
+  _validSafeAreaList: 
+  _openSafeAreaList: []
+  attackCycleTime: 60
+  safeAreaOpenTime: 40
+  attackStartTime: 20
+  attackEndTime: 10
+  attackWarning: "\u8B66\u5831\uFF1A\u6BD2\u9727\u5373\u5C07\u58DF\u7F69\u6751\u838A\uFF01\uFF01\uFF01"
+  safeAreaOpenHint: "\u5B89\u5168\u5340\u5DF2\u555F\u52D5\uFF0C\u8ACB\u76E1\u901F\u524D\u5F80\u907F\u96E3\uFF01\uFF01\uFF01"
+  attackHint: "\u6BD2\u9727\u5145\u65A5\u6574\u500B\u6751\u838A"
+  warningRemove: "\u6BD2\u9727\u4EE5\u6D88\u6563\uFF0C\u8B66\u5831\u89E3\u9664"

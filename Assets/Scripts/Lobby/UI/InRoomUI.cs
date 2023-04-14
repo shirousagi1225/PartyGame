@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class InRoomUI : MonoBehaviour,IPanel
 {
+    [SerializeField] private LobbyManager lobbyManager = null;
     [SerializeField] private CanvasGroup canvasGroup = null;
     [SerializeField] private Text roomNameText=null;
     [SerializeField] private PlayerCell playerCellPrefab = null;
@@ -50,5 +51,15 @@ public class InRoomUI : MonoBehaviour,IPanel
     {
         if (gameManager.playerDict.TryGetValue(gameManager.Runner.LocalPlayer, out PlayerNetworkData playerNetworkData))
             playerNetworkData.SetReady_RPC();
+    }
+
+    public void OnLeaveBtnClicked()
+    {
+        lobbyManager.SetPairState(PairState.CreatingRoom);
+    }
+
+    public void SetRoomName(string roomName)
+    {
+        roomNameText.text=roomName;
     }
 }

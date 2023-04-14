@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 32edb235e1b274d4ea76de1c7f3c7596, type: 3}
+  m_Name: ClothesDataList
+  m_EditorClassIdentifier: 
+  clothesDetailsList:
+  - clothesName: 1
+    featureList: 010000000500000007000000
+  - clothesName: 2
+    featureList: 01000000030000000600000008000000
+  - clothesName: 3
+    featureList: 01000000040000000500000007000000
+  - clothesName: 4
+    featureList: 020000000500000008000000
+  - clothesName: 5
+    featureList: 02000000030000000600000007000000
+  - clothesName: 6
+    featureList: 02000000040000000500000008000000

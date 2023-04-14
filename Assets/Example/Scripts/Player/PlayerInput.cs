@@ -638,7 +638,13 @@ namespace Example
 					if (keyboard.numpadPlusKey.wasPressedThisFrame  == true) { GetComponent<Player>().ToggleSpeedRPC(1);  }
 					if (keyboard.numpadMinusKey.wasPressedThisFrame == true) { GetComponent<Player>().ToggleSpeedRPC(-1); }
 				}
-			}
+
+                //Áô¨­
+                _renderInput.Invisibility = keyboard.altKey.isPressed;
+
+				//¬B¨ú
+				_renderInput.PickUp = keyboard.fKey.isPressed;
+            }
 
 			_renderInput.MoveDirection     = moveDirection;
 			_renderInput.LookRotationDelta = lookRotationDelta;
