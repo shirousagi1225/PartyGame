@@ -66,3 +66,44 @@
 - ClothesDataList_SO：服裝資料 新增
 - TaskDataList_SO：任務資料 新增
 - SafeAreaDataList_SO：安全區資料 新增
+
+## 距上次GIT更新功能(04/23)
+1.編寫玩家行為功能
+- ThirdPersonPlayer：
+    - 攻擊 未完成
+        - 修正無法攻擊到主機玩家Bug
+
+2.編寫武器物件功能
+- ObjectPoolManager：
+    - 生成武器(拾取武器時) 未完成
+        - 拾取武器同步替換玩家所持武器模型功能 ==擱置==
+
+3.編寫介面UI功能
+- StateUI：
+    - 狀態UI更新事件 武器欄 未完成
+        - 拾取武器更換對應UI圖示
+
+4.製作Shader
+- Barrier：
+    - 能量護盾Shader 未完成
+- ForceField：
+    - 能量護罩Shader 未完成
+- Dissolve：
+    - 溶解Shader 未完成
+        - ==用於隱身特效展示==
+- HeatDistortion：
+    - 熱變形Shader 未完成
+        - ==用於隱身特效展示==
+
+5.製作VFX
+- Dissolve_VFX：
+    - 製作溶解VFX 未完成
+        - ==用於隱身特效展示==
+- HeatDistortion_VFX：
+    - 製作熱變形VFX 未完成
+        - ==用於隱身特效展示==
+
+6.新增天空盒
+
+7.編寫資料結構
+- PlayerNetworkData：玩家網路資料 更新
