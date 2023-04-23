@@ -101,7 +101,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _interpolationDataSource: 0
-  weaponName: 2
+  weaponName: 3
 --- !u!1 &3677470950134604273
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,6 +1,6 @@
 public enum WeaponName
 {
-    None,Pan,Jumprope, Toypistol
+    None, Fist, Pan,Jumprope, Toypistol
 }
 
 public enum ClothesName

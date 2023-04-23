@@ -25,6 +25,7 @@ public class PlayerNetworkData : NetworkBehaviour
         if (Object.HasStateAuthority)
         {
             hp = maxHp;
+            weapon = WeaponName.Fist;
         }
             
         if (Object.HasInputAuthority)
@@ -85,7 +86,7 @@ public class PlayerNetworkData : NetworkBehaviour
             return;
 
         if (GameManager.Instance.playerDict[GameManager.Instance.Runner.LocalPlayer].playerName == changed.Behaviour.playerName)
-            EventHandler.CallStateUIUpdateEvent(changed.Behaviour.hp);
+            EventHandler.CallStateUIUpdateEvent(changed.Behaviour.hp,WeaponName.None);
 
         if (changed.Behaviour.hp == 0)
         {
@@ -104,6 +105,7 @@ public class PlayerNetworkData : NetworkBehaviour
 
     private static void OnWeaponChanged(Changed<PlayerNetworkData> changed)
     {
-        
+        if (GameManager.Instance.playerDict[GameManager.Instance.Runner.LocalPlayer].playerName == changed.Behaviour.playerName)
+            EventHandler.CallStateUIUpdateEvent(-1, changed.Behaviour.weapon);
     }
 }

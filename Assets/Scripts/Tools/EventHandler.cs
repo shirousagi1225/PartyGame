@@ -90,10 +90,10 @@ public static class EventHandler
         UseSafeAreaUIEvent?.Invoke(caption,roomCount);
     }
 
-    public static event Action<int> StateUIUpdateEvent;
-    public static void CallStateUIUpdateEvent(int hp)
+    public static event Action<int, WeaponName> StateUIUpdateEvent;
+    public static void CallStateUIUpdateEvent(int hp, WeaponName weapon)
     {
-        StateUIUpdateEvent?.Invoke(hp);
+        StateUIUpdateEvent?.Invoke(hp, weapon);
     }
 
     public static event Action<PlayerRef> PlayerDeadEvent;

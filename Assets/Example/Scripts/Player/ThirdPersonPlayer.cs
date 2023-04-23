@@ -21,11 +21,13 @@ namespace Example
 		[SerializeField][Tooltip("Events which trigger look rotation update of KCC.")]
 		private ELookRotationUpdateSource _lookRotationUpdateSource = ELookRotationUpdateSource.Jump | ELookRotationUpdateSource.Movement | ELookRotationUpdateSource.MouseHold;
 
-		[SerializeField] private GameObject weaponCol;
+        #region - 自訂義參數 -
+        [SerializeField] private GameObject weaponCol;
         public Transform weaponTrans;
         [SerializeField] private Vector3 colStartPos;
         [SerializeField] private Vector3 colEndPos;
         [SerializeField] private float colRadius;
+        #endregion
 
         [Networked][Accuracy(0.00001f)]
 		private Vector2 _pendingLookRotationDelta { get; set; }
@@ -40,7 +42,7 @@ namespace Example
 		protected override void OnSpawned()
 		{
 			_facingMoveRotationInterpolator = GetInterpolator<float>(nameof(_facingMoveRotation));
-		}
+        }
 
 		// 1.
 		protected override void ProcessEarlyFixedInput()
@@ -202,9 +204,9 @@ namespace Example
 		{
             // Executed after HitboxManager. Process other non-movement actions like shooting.
 
-            //if (Object.HasStateAuthority)
             if (GameManager.Instance.Runner.GameMode == GameMode.Host)
             {
+				//攻擊功能
                 if (Input.WasActivated(EGameplayInputAction.LMB) == true)
                 {
                     weaponCol.gameObject.SetActive(true);
@@ -213,16 +215,23 @@ namespace Example
                     var colliders = Physics.OverlapSphere(transform.position+ centerPos, colRadius, 1 << LayerMask.NameToLayer("Attackcol"));
                     //Debug.Log(colliders[0] + "："+colliders.Length);
 
-                    if (colliders.Length >1 && colliders[1].TryGetComponent<NetworkObject>(out NetworkObject localPlayer))
-                    {
-                        Debug.Log(localPlayer + "：" + colliders.Length);
-						Debug.Log(localPlayer.InputAuthority);
-						//Debug.Log(localPlayer.StateAuthority);
+					if(colliders.Length > 1)
+					{
+                        foreach (var collider in colliders)
+                        {
+                            if (collider.TryGetComponent(out NetworkObject localPlayer)&& localPlayer.InputAuthority!=Object.InputAuthority)
+                            {
+                                //Debug.Log(localPlayer.InputAuthority);
+                                //Debug.Log(localPlayer.StateAuthority);
 
-                    if (GameManager.Instance.playerDict.TryGetValue(localPlayer.InputAuthority, out PlayerNetworkData playerNetworkData))
-                            playerNetworkData.TakeDamage_RPC(1);
+                                if (GameManager.Instance.playerDict.TryGetValue(localPlayer.InputAuthority, out PlayerNetworkData playerNetworkData))
+                                    playerNetworkData.TakeDamage_RPC(1);
+                            }
+
+                            Debug.Log(collider + "/" + collider.GetComponent<NetworkObject>().InputAuthority + "：" + colliders.Length);
+                        }
                     }
-
+                    
                     weaponCol.gameObject.SetActive(false);
                     Debug.Log("Attack");
                 }
@@ -243,18 +252,17 @@ namespace Example
                 }
 
                 //拾取功能
-                /*if (Input.WasActivated(EGameplayInputAction.PickUp) == true)
+                if (Input.WasActivated(EGameplayInputAction.PickUp) == true)
                 {
-                    Weapon weapon;
                     var colliders = Physics.OverlapCapsule(gameObject.transform.position+colStartPos, gameObject.transform.position + colEndPos, colRadius, 1 << LayerMask.NameToLayer("Weapon"));
                     Debug.Log(colliders.Length);
 
-                    if (colliders.Length!=0 && (weapon=colliders[0].GetComponentInParent<Weapon>()))
+                    if (colliders.Length!=0 && colliders[0].transform.parent.TryGetComponent(out WeaponProp weaponProp))
                     {
-                        weapon.PickUpWeapon(Object);
+                        weaponProp.PickUpWeapon(Object);
                         Debug.Log("PickUp");
                     } 
-                }*/
+                }
             }
         }
 
@@ -451,11 +459,12 @@ namespace Example
         {
             var centerPos = new Vector3((colEndPos.x-colStartPos.x)/2, (colEndPos.y-colStartPos.y) / 2, (colEndPos.z-colStartPos.z)/ 2);
 
-			Gizmos.DrawWireSphere(gameObject.transform.position+ centerPos, colRadius);
-
             /*Gizmos.color = Color.red;
+            Gizmos.DrawWireSphere(gameObject.transform.position+ centerPos, colRadius);*/
+
+            Gizmos.color = Color.white;
 			Gizmos.DrawLine(gameObject.transform.position + colStartPos, gameObject.transform.position + colEndPos);
-            Gizmos.DrawWireSphere(gameObject.transform.position + centerPos, colRadius);*/
+            Gizmos.DrawWireSphere(gameObject.transform.position + centerPos, colRadius);
         }
     }
 }

@@ -49,7 +49,7 @@ public class ObjectPoolManager : NetworkSingleton<ObjectPoolManager>
     private void OnPickUpWeaponEvent(WeaponName weaponName, NetworkObject localPlayer)
     {
         if (GameManager.Instance.Runner.GameMode == GameMode.Host)
-            SpawnWeaponPickUp_RPC(weaponName, localPlayer);
+            SpawnWeaponPickUp(weaponName, localPlayer);
     }
 
     //重製回合事件
@@ -58,19 +58,25 @@ public class ObjectPoolManager : NetworkSingleton<ObjectPoolManager>
         
     }
 
+    //間接獲取武器資料
+    public WeaponDetails GetWeaponData(WeaponName weaponName)
+    {
+        return weaponData.GetWeaponDetails(weaponName);
+    }
+
     //初始化武器資訊：武器種類 機率 生成點
     private void InitWeaponData()
     {
         foreach(int weaponData in Enum.GetValues(typeof(WeaponName)))
         {
-            if(weaponData == 0)
+            if(weaponData <=1)
                 continue;
 
             //因武器及道具合併於同個資料集,因此在新增資料時需修改weaponData條件,將武器及道具分開
-            if (weaponData>=3)
+            if (weaponData>=4)
                 continue;
 
-            weaponDict.Add(weaponData-1,(WeaponName)weaponData);
+            weaponDict.Add(weaponData-2,(WeaponName)weaponData);
             //Debug.Log(weaponDict[weaponData - 1]);
         }
 
@@ -100,26 +106,26 @@ public class ObjectPoolManager : NetworkSingleton<ObjectPoolManager>
     //生成武器(拾取武器時)：用於拾取武器,根據玩家目前武器欄是否有武器做區分
     //1.有武器：更換手持武器,並丟棄原武器
     //2.沒武器：新增武器至武器欄
-    [Rpc(sources: RpcSources.StateAuthority, targets: RpcTargets.All)]
-    private void SpawnWeaponPickUp_RPC(WeaponName weaponName, NetworkObject localPlayer)
+    //[Rpc(sources: RpcSources.StateAuthority, targets: RpcTargets.All)]
+    private void SpawnWeaponPickUp(WeaponName weaponName, NetworkObject localPlayer)
     {
         if(GameManager.Instance.playerDict.TryGetValue(localPlayer.InputAuthority, out PlayerNetworkData playerNetworkData))
         {
-            var spawnPos = localPlayer.GetComponent<ThirdPersonPlayer>().weaponTrans;
+            //var spawnPos = localPlayer.GetComponent<ThirdPersonPlayer>().weaponTrans;
 
-            if (playerNetworkData.weapon != WeaponName.None)
+            if (playerNetworkData.weapon != WeaponName.Fist)
             {
-                //if (runner.GameMode == GameMode.Host)
-                GameManager.Instance.Runner.Spawn(weaponData.GetWeaponDetails(playerNetworkData.weapon).weaponProp, spawnPos.position, Quaternion.identity);
+                GameManager.Instance.Runner.Spawn(weaponData.GetWeaponDetails(playerNetworkData.weapon).weaponProp, localPlayer.transform.position+Vector3.up*0.4f, Quaternion.identity);
+
                 //runner.Despawn(spawnPos.GetChild(0).GetComponent<NetworkObject>());
-                Destroy(spawnPos.GetChild(0).gameObject);
+                //Destroy(spawnPos.GetChild(0).gameObject);
             }
 
-            //if (runner.GameMode == GameMode.Host)
-                playerNetworkData.SetWeapon_RPC(weaponName);
+            playerNetworkData.SetWeapon_RPC(weaponName);
+
             //var weapon=runner.Spawn(weaponData.GetWeaponDetails(weaponName).weapon, spawnPos.position, spawnPos.rotation);
             //weapon.transform.SetParent(spawnPos);
-            Instantiate(weaponData.GetWeaponDetails(weaponName).weapon, spawnPos.position, spawnPos.rotation, spawnPos);
+            //Instantiate(weaponData.GetWeaponDetails(weaponName).weapon, spawnPos.position, spawnPos.rotation, spawnPos);
 
             //Debug.Log("Weapon has spawn");
         }

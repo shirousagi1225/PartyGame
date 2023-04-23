@@ -120,6 +120,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: house1f_1_A_Furniture
       objectReference: {fileID: 0}
+    - target: {fileID: 1684392717060811375, guid: 45773e0c5a6a92645b1d3f34efc89c6f,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 13
+      objectReference: {fileID: 0}
     - target: {fileID: 5746321935069955908, guid: 45773e0c5a6a92645b1d3f34efc89c6f,
         type: 3}
       propertyPath: m_RootOrder
