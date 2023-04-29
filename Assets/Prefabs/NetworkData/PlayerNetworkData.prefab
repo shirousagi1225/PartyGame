@@ -70,10 +70,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _interpolationDataSource: 0
+  maxHp: 3
+  invisibilityTime: 10
+  invisibilityCDTime: 10
+  invisibilityStiffTime: 0
+  VFXs: []
+  materials: []
   _playerName: 
   _isReady:
     _value: 0
-  maxHp: 3
   _hp: 0
+  _isHurt:
+    _value: 0
   _clothes: 0
   _task: 0
+  _weapon: 0
+  _aniType: 0
+  _isInvisibility:
+    _value: 0

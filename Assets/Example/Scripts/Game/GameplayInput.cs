@@ -15,6 +15,7 @@ namespace Example
 		RightTrigger = 7,
         Invisibility = 8,
         PickUp = 9,
+		Walk=10,
     }
 
 	/// <summary>
@@ -44,6 +45,7 @@ namespace Example
 		public bool RightTrigger { get { return Actions.IsSet(EGameplayInputAction.RightTrigger); } set { Actions.Set(EGameplayInputAction.RightTrigger, value); } }
         public bool Invisibility { get { return Actions.IsSet(EGameplayInputAction.Invisibility); } set { Actions.Set(EGameplayInputAction.Invisibility, value); } }
         public bool PickUp { get { return Actions.IsSet(EGameplayInputAction.PickUp); } set { Actions.Set(EGameplayInputAction.PickUp, value); } }
+        public bool Walk { get { return Actions.IsSet(EGameplayInputAction.Walk); } set { Actions.Set(EGameplayInputAction.Walk, value); } }
     }
 
 	public static class GameplayInputActionExtensions

@@ -101,4 +101,10 @@ public static class EventHandler
     {
         PlayerDeadEvent?.Invoke(playerRef);
     }
+
+    public static event Action<PlayerRef,bool> PlayerStiffEvent;
+    public static void CallPlayerStiffEvent(PlayerRef playerRef, bool isStiff)
+    {
+        PlayerStiffEvent?.Invoke(playerRef, isStiff);
+    }
 }

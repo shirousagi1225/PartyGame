@@ -604,10 +604,26 @@ namespace Example
 					ActivateIgnoreInputWindow();
 				}
 
-				if (keyboard.wKey.isPressed == true) { moveDirection += Vector2.up;    }
-				if (keyboard.sKey.isPressed == true) { moveDirection += Vector2.down;  }
-				if (keyboard.aKey.isPressed == true) { moveDirection += Vector2.left;  }
-				if (keyboard.dKey.isPressed == true) { moveDirection += Vector2.right; }
+				if (keyboard.wKey.isPressed == true) 
+				{ 
+					moveDirection += Vector2.up;
+                    _renderInput.Walk = keyboard.wKey.isPressed;
+                }
+				if (keyboard.sKey.isPressed == true) 
+				{ 
+					moveDirection += Vector2.down;
+                    _renderInput.Walk = keyboard.sKey.isPressed;
+                }
+				if (keyboard.aKey.isPressed == true) 
+				{ 
+					moveDirection += Vector2.left;
+                    _renderInput.Walk = keyboard.aKey.isPressed;
+                }
+				if (keyboard.dKey.isPressed == true) 
+				{ 
+					moveDirection += Vector2.right;
+                    _renderInput.Walk = keyboard.dKey.isPressed;
+                }
 
 				if (moveDirection.IsZero() == false)
 				{
@@ -615,22 +631,22 @@ namespace Example
 				}
 
 				// Camera smoothness testing => side walk + rotation with constant speed. You can safely remove it.
-				if (keyboard.qKey.isPressed == true)
+				/*if (keyboard.qKey.isPressed == true)
 				{
 					moveDirection = Vector2.left;
 					lookRotationDelta = new Vector2(0.0f, 60.0f * Time.deltaTime);
-				}
+				}*/
 
 				// Camera smoothness testing => side walk + rotation with constant speed. You can safely remove it.
-				if (keyboard.eKey.isPressed == true)
+				/*if (keyboard.eKey.isPressed == true)
 				{
 					moveDirection = Vector2.right;
 					lookRotationDelta = new Vector2(0.0f, -60.0f * Time.deltaTime);
-				}
+				}*/
 
 				_renderInput.Jump   = keyboard.spaceKey.isPressed;
 				_renderInput.Dash   = keyboard.tabKey.isPressed;
-				_renderInput.Sprint = keyboard.leftShiftKey.isPressed;
+                _renderInput.Sprint = keyboard.leftShiftKey.isPressed;
 
 				if (Object.HasInputAuthority == true)
 				{
@@ -640,7 +656,7 @@ namespace Example
 				}
 
                 //Áô¨­
-                _renderInput.Invisibility = keyboard.altKey.isPressed;
+                _renderInput.Invisibility = keyboard.ctrlKey.isPressed;
 
 				//¬B¨ú
 				_renderInput.PickUp = keyboard.fKey.isPressed;

@@ -18,6 +18,8 @@ public class SpawnManager : MonoBehaviour,INetworkRunnerCallbacks
     private Dictionary<PlayerRef, NetworkObject> playerDict = new Dictionary<PlayerRef, NetworkObject>();
     private HashSet<int> playerSpawnedPoints = new HashSet<int>();
 
+    private float defSpeedMultiplier=0;
+
     private void Start()
     {
         networkRunner=GameManager.Instance.Runner;
@@ -30,12 +32,33 @@ public class SpawnManager : MonoBehaviour,INetworkRunnerCallbacks
 
     private void OnEnable()
     {
+        EventHandler.PlayerStiffEvent += OnPlayerStiffEvent;
         EventHandler.PlayerDeadEvent += OnPlayerDeadEvent;
     }
 
     private void OnDisable()
     {
+        EventHandler.PlayerStiffEvent -= OnPlayerStiffEvent;
         EventHandler.PlayerDeadEvent -= OnPlayerDeadEvent;
+    }
+
+    //玩家硬直事件
+    //只能限制移動,其他玩家行為(跳躍 攻擊)還沒進行限制,需在ThirdPersonPlayer進行判定
+    private void OnPlayerStiffEvent(PlayerRef playerRef,bool isStiff)
+    {
+        /*foreach (var player in playerDict.Keys)
+            Debug.Log(player.ToString()+ playerDict.Count);*/
+
+        if (GameManager.Instance.Runner.GameMode == GameMode.Host)
+        {
+            if (defSpeedMultiplier == 0&& playerDict[playerRef].TryGetComponent<ThirdPersonPlayer>(out ThirdPersonPlayer player))
+                defSpeedMultiplier = player.SpeedMultiplier;
+
+            if (isStiff)
+                playerDict[playerRef].GetComponent<ThirdPersonPlayer>().SpeedMultiplier = 0f;
+            else
+                playerDict[playerRef].GetComponent<ThirdPersonPlayer>().SpeedMultiplier = defSpeedMultiplier;
+        }
     }
 
     //玩家死亡事件

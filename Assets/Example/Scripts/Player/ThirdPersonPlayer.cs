@@ -4,11 +4,13 @@ namespace Example
 	using UnityEngine;
 	using Fusion;
 	using Fusion.KCC;
+    using UnityEngine.VFX;
+	using UnityEngine.InputSystem;
 
 	/// <summary>
 	/// Advanced player implementation with third person view.
 	/// </summary>
-	[OrderBefore(typeof(KCC))]
+    [OrderBefore(typeof(KCC))]
 	[OrderAfter(typeof(AdvancedPlayer))]
 	public sealed class ThirdPersonPlayer : AdvancedPlayer
 	{
@@ -22,6 +24,12 @@ namespace Example
 		private ELookRotationUpdateSource _lookRotationUpdateSource = ELookRotationUpdateSource.Jump | ELookRotationUpdateSource.Movement | ELookRotationUpdateSource.MouseHold;
 
         #region - 自訂義參數 -
+        [Header("材質/特效設置")]
+		[SerializeField] private SkinnedMeshRenderer skinnedMesh;
+		[SerializeField] private VisualEffect[] VFXs;
+		private Material[] materials;
+
+        [Header("武器碰撞設置")]
         [SerializeField] private GameObject weaponCol;
         public Transform weaponTrans;
         [SerializeField] private Vector3 colStartPos;
@@ -37,11 +45,26 @@ namespace Example
 		private Vector2             _renderLookRotationDelta;
 		private Interpolator<float> _facingMoveRotationInterpolator;
 
-		// AdvancedPlayer INTERFACE
+        // AdvancedPlayer INTERFACE
 
-		protected override void OnSpawned()
+        protected override void OnSpawned()
 		{
 			_facingMoveRotationInterpolator = GetInterpolator<float>(nameof(_facingMoveRotation));
+
+			//初始化玩家角色材質
+			if(skinnedMesh!=null)
+                materials= skinnedMesh.materials;
+
+			//初始化玩家角色對應網路資料(材質 VFX)
+			if (GameManager.Instance.playerDict.TryGetValue(Object.InputAuthority, out PlayerNetworkData playerNetworkData))
+			{
+				if (playerNetworkData.materials.Length == 0)
+					playerNetworkData.materials = materials;
+                //Debug.Log(materials.Length);
+                //Debug.Log(playerNetworkData.materials.Length);
+
+                playerNetworkData.VFXs = VFXs;
+            }
         }
 
 		// 1.
@@ -66,7 +89,7 @@ namespace Example
 			if (HasLookRotationUpdateSource(ELookRotationUpdateSource.MouseMovement) == true) { updateLookRotation |= Input.FixedInput.LookRotationDelta.IsZero() == false; }
 			if (HasLookRotationUpdateSource(ELookRotationUpdateSource.Dash)          == true) { updateLookRotation |= Input.WasActivated(EGameplayInputAction.Dash);        }
 
-			if (updateLookRotation == true)
+            if (updateLookRotation == true)
 			{
 				// Some conditions are met, we can apply pending look rotation delta to KCC
 				if (_pendingLookRotationDelta.IsZero() == false)
@@ -125,8 +148,17 @@ namespace Example
 
 			if (Input.WasActivated(EGameplayInputAction.Jump) == true)
 			{
-				// Is jump rotation invalid (not set)? Get it from other source.
-				if (jumpRotation.IsZero() == true)
+				//測試用,之後要改到動畫邏輯內
+                //切換移動狀態：用於動畫及隱身功能切換(跳躍)
+                if (GameManager.Instance.Runner.GameMode == GameMode.Host)
+                    if (GameManager.Instance.playerDict.TryGetValue(Object.InputAuthority, out PlayerNetworkData playerNetworkData) && playerNetworkData.isInvisibility)
+					{
+                        playerNetworkData.SetAniType_RPC(AnimationType.Jump);
+                        //Debug.Log(playerNetworkData.moveType);
+                    }
+
+                // Is jump rotation invalid (not set)? Get it from other source.
+                if (jumpRotation.IsZero() == true)
 				{
 					// Is facing rotation valid? Use it.
 					if (facingRotation.IsZero() == false)
@@ -152,8 +184,18 @@ namespace Example
 			// Notice we are checking KCC.FixedData because we are in fixed update code path (render update uses KCC.RenderData)
 			if (KCC.FixedData.IsGrounded == true)
 			{
-				// Sprint is updated only when grounded
-				KCC.SetSprint(Input.FixedInput.Sprint);
+                //測試用,之後要改到動畫邏輯內
+                //切換移動狀態：用於動畫及隱身功能切換(跑步)
+                if (GameManager.Instance.Runner.GameMode == GameMode.Host)
+                    if (Input.FixedInput.Walk && Input.FixedInput.Sprint)
+                        if (GameManager.Instance.playerDict.TryGetValue(Object.InputAuthority, out PlayerNetworkData playerNetworkData) && playerNetworkData.isInvisibility)
+						{
+							playerNetworkData.SetAniType_RPC(AnimationType.Run);
+							//Debug.Log(playerNetworkData.aniType);
+						} 
+
+                // Sprint is updated only when grounded
+                KCC.SetSprint(Input.FixedInput.Sprint);
 			}
 
 			if (Input.WasActivated(EGameplayInputAction.Dash) == true)
@@ -176,7 +218,17 @@ namespace Example
 					_facingMoveRotation = facingYaw;
 				}
 			}
-		}
+
+            //測試用,之後要改到動畫邏輯內
+            //切換移動狀態：用於動畫及隱身功能切換(走路)
+            if (GameManager.Instance.Runner.GameMode == GameMode.Host)
+				if(Input.FixedInput.Walk && !Input.FixedInput.Sprint && Input.WasActivated(EGameplayInputAction.Jump) == false)
+                    if (GameManager.Instance.playerDict.TryGetValue(Object.InputAuthority, out PlayerNetworkData playerNetworkData)&& playerNetworkData.isInvisibility)
+					{
+						playerNetworkData.SetAniType_RPC(AnimationType.Walk);
+                        //Debug.Log(playerNetworkData.aniType);
+                    }
+        }
 
 		// 2.
 		protected override void OnFixedUpdate()
@@ -225,7 +277,11 @@ namespace Example
                                 //Debug.Log(localPlayer.StateAuthority);
 
                                 if (GameManager.Instance.playerDict.TryGetValue(localPlayer.InputAuthority, out PlayerNetworkData playerNetworkData))
-                                    playerNetworkData.TakeDamage_RPC(1);
+								{
+									playerNetworkData.TakeDamage_RPC(1);
+									playerNetworkData.SetIsHurt_RPC(true);
+                                }
+                                    
                             }
 
                             Debug.Log(collider + "/" + collider.GetComponent<NetworkObject>().InputAuthority + "：" + colliders.Length);
@@ -246,9 +302,15 @@ namespace Example
                     // Middle mouse button action
                 }
 
+				//隱身功能
                 if (Input.WasActivated(EGameplayInputAction.Invisibility) == true)
                 {
-                    Debug.Log("Invisibility");
+                    if (GameManager.Instance.playerDict.TryGetValue(Object.InputAuthority, out PlayerNetworkData playerNetworkData)&& playerNetworkData.isInvisibility==false)
+					{
+                        playerNetworkData.SetInvisibility_RPC(true);
+
+                        Debug.Log("Invisibility");
+                    } 
                 }
 
                 //拾取功能
@@ -390,8 +452,8 @@ namespace Example
 			// Notice we are checking KCC.RenderData because we are in render update code path (fixed update uses KCC.FixedData)
 			if (KCC.RenderData.IsGrounded == true)
 			{
-				// Sprint is updated only when grounded
-				KCC.SetSprint(Input.CachedInput.Sprint);
+                // Sprint is updated only when grounded
+                KCC.SetSprint(Input.CachedInput.Sprint);
 			}
 
 			// Is facing rotation set? Apply to the visual.

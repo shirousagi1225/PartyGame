@@ -2,19 +2,30 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Fusion;
+using UnityEngine.VFX;
 
 public class PlayerNetworkData : NetworkBehaviour
 {
+    [Header("ª±®a³]¸m")]
     [SerializeField] private PlayerRef playerRef;
-    [Networked(OnChanged = nameof(OnPlayerNameChanged))] public string playerName { get; set; }
-    [Networked(OnChanged = nameof(OnIsReadyChanged))] public NetworkBool isReady { get; set; }
-
     [SerializeField] private int maxHp;
 
+    [SerializeField] private float invisibilityTime;
+    [SerializeField] private float invisibilityCDTime;
+    [SerializeField] private float invisibilityStiffTime;
+
+    public VisualEffect[] VFXs;
+    public Material[] materials;
+
+    [Networked(OnChanged = nameof(OnPlayerNameChanged))] public string playerName { get; set; }
+    [Networked(OnChanged = nameof(OnIsReadyChanged))] public NetworkBool isReady { get; set; }
     [Networked(OnChanged = nameof(OnHpChanged))] public int hp { get; set; }
+    [Networked] public NetworkBool isHurt { get; set; }
     [Networked] public ClothesName clothes { get; set; }
     [Networked(OnChanged = nameof(OnTaskChanged))] public FeatureName task { get; set; }
     [Networked(OnChanged = nameof(OnWeaponChanged))] public WeaponName weapon { get; set; }
+    [Networked(OnChanged = nameof(OnAniTypeChanged))] public AnimationType aniType { get; set; }
+    [Networked(OnChanged = nameof(OnInvisibilityChanged))] public NetworkBool isInvisibility { get; set; }
 
     public override void Spawned()
     {
@@ -53,6 +64,12 @@ public class PlayerNetworkData : NetworkBehaviour
     }
 
     [Rpc(sources: RpcSources.StateAuthority, targets: RpcTargets.StateAuthority)]
+    public void SetIsHurt_RPC(bool value)
+    {
+        isHurt = value;
+    }
+
+    [Rpc(sources: RpcSources.StateAuthority, targets: RpcTargets.StateAuthority)]
     public void SetClothes_RPC(ClothesName clothesName)
     {
         clothes = clothesName;
@@ -68,6 +85,18 @@ public class PlayerNetworkData : NetworkBehaviour
     public void SetWeapon_RPC(WeaponName weaponName)
     {
         weapon = weaponName;
+    }
+
+    [Rpc(sources: RpcSources.StateAuthority, targets: RpcTargets.StateAuthority)]
+    public void SetAniType_RPC(AnimationType aniType)
+    {
+        this.aniType = aniType;
+    }
+
+    [Rpc(sources: RpcSources.StateAuthority, targets: RpcTargets.StateAuthority)]
+    public void SetInvisibility_RPC(bool value)
+    {
+        isInvisibility= value;
     }
 
     private static void OnPlayerNameChanged(Changed<PlayerNetworkData> changed)
@@ -86,15 +115,14 @@ public class PlayerNetworkData : NetworkBehaviour
             return;
 
         if (GameManager.Instance.playerDict[GameManager.Instance.Runner.LocalPlayer].playerName == changed.Behaviour.playerName)
-            EventHandler.CallStateUIUpdateEvent(changed.Behaviour.hp,WeaponName.None);
+            EventHandler.CallStateUIUpdateEvent(changed.Behaviour.hp, WeaponName.None);
 
         if (changed.Behaviour.hp == 0)
         {
             EventHandler.CallPlayerDeadEvent(changed.Behaviour.playerRef);
 
             EventHandler.CallTaskUpdateEvent(changed.Behaviour);
-        }
-            
+        }     
     }
 
     private static void OnTaskChanged(Changed<PlayerNetworkData> changed)
@@ -107,5 +135,17 @@ public class PlayerNetworkData : NetworkBehaviour
     {
         if (GameManager.Instance.playerDict[GameManager.Instance.Runner.LocalPlayer].playerName == changed.Behaviour.playerName)
             EventHandler.CallStateUIUpdateEvent(-1, changed.Behaviour.weapon);
+    }
+
+    private static void OnAniTypeChanged(Changed<PlayerNetworkData> changed)
+    {
+        RendererManager.Instance.HeatDistortionCtrl(changed.Behaviour.VFXs, changed.Behaviour.aniType);
+    }
+
+    private static void OnInvisibilityChanged(Changed<PlayerNetworkData> changed)
+    {
+        if(changed.Behaviour.isInvisibility==true)
+            RendererManager.Instance.InvisibilityEffect(changed.Behaviour.playerRef, changed.Behaviour, changed.Behaviour.VFXs, changed.Behaviour.materials
+                , changed.Behaviour.invisibilityTime, changed.Behaviour.invisibilityCDTime, changed.Behaviour.invisibilityStiffTime);
     }
 }

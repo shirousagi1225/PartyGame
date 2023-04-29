@@ -23,6 +23,11 @@ public enum ProbabilityType
     None, Clothes, Feature, Weapon
 }
 
+public enum AnimationType
+{
+    None, QuietWalk, Walk, Run,Jump
+}
+
 public enum PairState
 {
     Lobby, CreatingRoom, InRoom
