@@ -1,19 +1,74 @@
 # PartyGame
 
-## 距上次GIT更新功能(04/03)
-1.編寫連線功能(LobbyManager：建立房間/加入房間/進入遊戲 未完成)
+## 距上次GIT更新功能(04/29)
+1.編寫玩家行為功能
+- ThirdPersonPlayer：
+    - 隱身 未完成
+        - 新增隱身特效材質及VFX初始化方式
+        - 新增隱身功能的啟動方式
+        - 新增切換移動動畫狀態方式
 
-2.編寫開始介面功能(RoomListUI/CreateRoomUI：UI邏輯 未完成)
+2.編寫渲染器功能
+- RendererManager：
+    - 隱身特效 未完成
+        - 隱身特效 
+            - ==用於執行隱身特效的流程==
+        - 溶解啟動 
+            - ==隱身特效的啟動階段==
+        - 溶解解除 
+            - ==隱身特效的失效階段==
+        - 熱擾動控制 
+            - ==用於根據移動狀態同步改變熱擾動程度==
+    - 技能運作時間 完成
+        - ==技能時間計算,受攻擊會立即解除技能==
+- SpawnManager：
+    - 玩家硬直事件 完成
+        - ==限制玩家移動,達到僵直效果==
 
-3.編寫組隊大廳介面功能(InRoomUI：UI邏輯 未完成)
+3.編寫資料結構
+- PlayerNetworkData：玩家網路資料 更新
+- AnimationDataList_SO：動畫資料 新增
 
-4.編寫物件生成功能(SpawnManager：生成玩家/ObjectPoolManager：生成武器 未完成)
+## 距上次GIT更新功能(04/23)
+1.編寫玩家行為功能
+- ThirdPersonPlayer：
+    - 攻擊 未完成
+        - 修正無法攻擊到主機玩家Bug
 
-5.編寫資料結構(PlayerNetworkData：玩家資料/WeaponDataList_SO：武器資料)
+2.編寫武器物件功能
+- ObjectPoolManager：
+    - 生成武器(拾取武器時) 未完成
+        - 拾取武器同步替換玩家所持武器模型功能 ==擱置==
 
-6.編寫網路物件池功能(NetworkObjectPool/NetworkObjectPoolRoot)
+3.編寫介面UI功能
+- StateUI：
+    - 狀態UI更新事件 武器欄 未完成
+        - 拾取武器更換對應UI圖示
 
-7.編寫機率計算功能(AlgorithmManager：通用機率)
+4.製作Shader
+- Barrier：
+    - 能量護盾Shader 未完成
+- ForceField：
+    - 能量護罩Shader 未完成
+- Dissolve：
+    - 溶解Shader 未完成
+        - ==用於隱身特效展示==
+- HeatDistortion：
+    - 熱變形Shader 未完成
+        - ==用於隱身特效展示==
+
+5.製作VFX
+- Dissolve_VFX：
+    - 製作溶解VFX 未完成
+        - ==用於隱身特效展示==
+- HeatDistortion_VFX：
+    - 製作熱變形VFX 未完成
+        - ==用於隱身特效展示==
+
+6.新增天空盒
+
+7.編寫資料結構
+- PlayerNetworkData：玩家網路資料 更新
 
 ## 距上次GIT更新功能(04/15)
 1.編寫玩家行為功能
@@ -67,43 +122,17 @@
 - TaskDataList_SO：任務資料 新增
 - SafeAreaDataList_SO：安全區資料 新增
 
-## 距上次GIT更新功能(04/23)
-1.編寫玩家行為功能
-- ThirdPersonPlayer：
-    - 攻擊 未完成
-        - 修正無法攻擊到主機玩家Bug
+## 距上次GIT更新功能(04/03)
+1.編寫連線功能(LobbyManager：建立房間/加入房間/進入遊戲 未完成)
 
-2.編寫武器物件功能
-- ObjectPoolManager：
-    - 生成武器(拾取武器時) 未完成
-        - 拾取武器同步替換玩家所持武器模型功能 ==擱置==
+2.編寫開始介面功能(RoomListUI/CreateRoomUI：UI邏輯 未完成)
 
-3.編寫介面UI功能
-- StateUI：
-    - 狀態UI更新事件 武器欄 未完成
-        - 拾取武器更換對應UI圖示
+3.編寫組隊大廳介面功能(InRoomUI：UI邏輯 未完成)
 
-4.製作Shader
-- Barrier：
-    - 能量護盾Shader 未完成
-- ForceField：
-    - 能量護罩Shader 未完成
-- Dissolve：
-    - 溶解Shader 未完成
-        - ==用於隱身特效展示==
-- HeatDistortion：
-    - 熱變形Shader 未完成
-        - ==用於隱身特效展示==
+4.編寫物件生成功能(SpawnManager：生成玩家/ObjectPoolManager：生成武器 未完成)
 
-5.製作VFX
-- Dissolve_VFX：
-    - 製作溶解VFX 未完成
-        - ==用於隱身特效展示==
-- HeatDistortion_VFX：
-    - 製作熱變形VFX 未完成
-        - ==用於隱身特效展示==
+5.編寫資料結構(PlayerNetworkData：玩家資料/WeaponDataList_SO：武器資料)
 
-6.新增天空盒
+6.編寫網路物件池功能(NetworkObjectPool/NetworkObjectPoolRoot)
 
-7.編寫資料結構
-- PlayerNetworkData：玩家網路資料 更新
+7.編寫機率計算功能(AlgorithmManager：通用機率)
