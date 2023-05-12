@@ -9,6 +9,7 @@ using UnityEngine.SceneManagement;
 
 public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
 {
+    [SerializeField] private GameNetworkData gameNetworkDataPrefab = null;
     [SerializeField] private PlayerNetworkData playerNetworkDataPrefab = null;
     [SerializeField] private RoomListUI roomListUI = null;
     [SerializeField] private CreateRoomUI createRoomUI = null;
@@ -41,8 +42,10 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
             PlayerCount=maxPlayer,
             Scene=SceneManager.GetActiveScene().buildIndex,
             SceneManager= GameManager.Instance.gameObject.AddComponent<NetworkSceneManagerDefault>(),
-            ObjectPool=ObjectPoolManager.Instance.gameObject.AddComponent<NetworkObjectPoolRoot>()
+            ObjectPool=ObjectPoolManager.Instance.gameObject.GetComponent<NetworkObjectPoolRoot>()
         });
+
+        GameManager.Instance.Runner.Spawn(gameNetworkDataPrefab, Vector3.zero, Quaternion.identity);
 
         if (result.Ok)
         {
@@ -62,8 +65,10 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
             SessionName = roomName,
             Scene = SceneManager.GetActiveScene().buildIndex,
             SceneManager = GameManager.Instance.gameObject.AddComponent<NetworkSceneManagerDefault>(),
-            ObjectPool = ObjectPoolManager.Instance.gameObject.AddComponent<NetworkObjectPoolRoot>()
+            ObjectPool = ObjectPoolManager.Instance.gameObject.GetComponent<NetworkObjectPoolRoot>()
         });
+
+        GameManager.Instance.Runner.Spawn(gameNetworkDataPrefab, Vector3.zero, Quaternion.identity);
 
         if (result.Ok)
         {

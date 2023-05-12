@@ -65,7 +65,7 @@ public class RendererManager : Singleton<RendererManager>
     {
         yield return StartCoroutine(SkillTime(playerNetworkData, time));
 
-        EventHandler.CallPlayerStiffEvent(playerRef, true);
+        CustomEventHandler.CallPlayerStiffEvent(playerRef, true);
 
         if (VFXs.GetValue(1) != null)
             VFXs[1].Stop();
@@ -86,7 +86,7 @@ public class RendererManager : Singleton<RendererManager>
         }
 
         yield return new WaitForSeconds(stiffTime);
-        EventHandler.CallPlayerStiffEvent(playerRef, false);
+        CustomEventHandler.CallPlayerStiffEvent(playerRef, false);
 
         yield return new WaitForSeconds(CDTime- stiffTime);
 
@@ -110,5 +110,5 @@ public class RendererManager : Singleton<RendererManager>
             else
                 yield return new WaitForSeconds(1f);
         }
-    }
+    } 
 }

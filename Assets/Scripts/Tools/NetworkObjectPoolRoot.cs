@@ -27,24 +27,35 @@ public class NetworkObjectPoolRoot : MonoBehaviour,INetworkObjectPool
 
         if(NetworkProjectConfig.Global.PrefabTable.TryGetPrefab(info.Prefab,out prefab))
         {
-            NetworkObjectPool pool=GetPool(prefab);
-            NetworkObject newObj = pool.GetFromPool(Vector3.zero,Quaternion.identity);
-
-            if (newObj == null)
+            if(prefab.tag != "Player")
             {
-                newObj = Instantiate(prefab, Vector3.zero, Quaternion.identity);
-                _poolByInstance[newObj]=pool;
+                NetworkObjectPool pool = GetPool(prefab);
+                NetworkObject newObj = pool.GetFromPool(Vector3.zero, Quaternion.identity);
+
+                if (newObj == null)
+                {
+                    newObj = Instantiate(prefab, Vector3.zero, Quaternion.identity);
+                    _poolByInstance[newObj] = pool;
+                }
+
+                newObj.gameObject.SetActive(true);
+
+                /*foreach (var prefabs in _poolByPrefab.Keys)
+                    Debug.Log("prefabs : "+prefabs+ _poolByPrefab.Count);
+
+                foreach (var instance in _poolByInstance.Keys)
+                    Debug.Log("instance : "+instance+ _poolByInstance.Count);*/
+
+                /*Debug.Log("prefabs : " + prefab + _poolByPrefab.Count);
+                Debug.Log("instance : " + newObj + _poolByInstance.Count);*/
+
+                return newObj;
             }
-
-            newObj.gameObject.SetActive(true);
-
-            /*foreach (var prefabs in _poolByPrefab.Keys)
-                Debug.Log("prefabs : "+prefabs+ _poolByPrefab.Count);
-
-            foreach (var instance in _poolByInstance.Keys)
-                Debug.Log("instance : "+instance+ _poolByInstance.Count);*/
-            
-            return newObj;
+            else
+            {
+                NetworkObject newObj = Instantiate(prefab, Vector3.zero, Quaternion.identity);
+                return newObj;
+            }
         }
 
         Debug.LogError("No prefab for " + info.Prefab);
@@ -53,7 +64,7 @@ public class NetworkObjectPoolRoot : MonoBehaviour,INetworkObjectPool
 
     public void ReleaseInstance(NetworkRunner runner, NetworkObject instance, bool isSceneObject)
     {
-        Debug.Log($"Releasing {instance} instance, isSceneObject={isSceneObject}");
+        //Debug.Log($"Releasing {instance} instance, isSceneObject={isSceneObject}");
         if (instance != null)
         {
             NetworkObjectPool pool;
@@ -63,7 +74,7 @@ public class NetworkObjectPoolRoot : MonoBehaviour,INetworkObjectPool
                 pool.ReturnToPool(instance);
                 instance.gameObject.SetActive(false);
                 instance.transform.SetParent(transform, false);
-                //Debug.Log("In to pool");
+                //Debug.Log(instance + "¡G In to pool");
             }
             else
             {

@@ -7,9 +7,9 @@ namespace Example
     using UnityEngine.VFX;
 	using UnityEngine.InputSystem;
 
-	/// <summary>
-	/// Advanced player implementation with third person view.
-	/// </summary>
+    /// <summary>
+    /// Advanced player implementation with third person view.
+    /// </summary>
     [OrderBefore(typeof(KCC))]
 	[OrderAfter(typeof(AdvancedPlayer))]
 	public sealed class ThirdPersonPlayer : AdvancedPlayer
@@ -23,9 +23,9 @@ namespace Example
 		[SerializeField][Tooltip("Events which trigger look rotation update of KCC.")]
 		private ELookRotationUpdateSource _lookRotationUpdateSource = ELookRotationUpdateSource.Jump | ELookRotationUpdateSource.Movement | ELookRotationUpdateSource.MouseHold;
 
-        #region - 自訂義參數 -
+		#region - 自訂義參數 -
         [Header("材質/特效設置")]
-		[SerializeField] private SkinnedMeshRenderer skinnedMesh;
+		[SerializeField] private SkinnedMeshRenderer[] skinnedMeshs;
 		[SerializeField] private VisualEffect[] VFXs;
 		private Material[] materials;
 
@@ -51,19 +51,30 @@ namespace Example
 		{
 			_facingMoveRotationInterpolator = GetInterpolator<float>(nameof(_facingMoveRotation));
 
-			//初始化玩家角色材質
-			if(skinnedMesh!=null)
-                materials= skinnedMesh.materials;
-
-			//初始化玩家角色對應網路資料(材質 VFX)
 			if (GameManager.Instance.playerDict.TryGetValue(Object.InputAuthority, out PlayerNetworkData playerNetworkData))
 			{
-				if (playerNetworkData.materials.Length == 0)
-					playerNetworkData.materials = materials;
+                //初始化玩家角色材質
+                if (skinnedMeshs.Length != 0)
+                {
+                    Material[] materials = new Material[skinnedMeshs.Length];
+
+                    for (int i = 0; i < skinnedMeshs.Length; i++)
+                        materials[i] = skinnedMeshs[i].materials[0];
+
+                    this.materials = materials;
+                }
+
+                //初始化玩家角色對應網路資料(材質 VFX)
+                playerNetworkData.materials = materials;
                 //Debug.Log(materials.Length);
                 //Debug.Log(playerNetworkData.materials.Length);
 
                 playerNetworkData.VFXs = VFXs;
+				
+                //Debug.Log("ThirdPersonPlayer：" + materials.Length);
+
+				if(playerNetworkData.clothes!=ClothesName.None)
+                    CustomEventHandler.CallSetClothesEvent(playerNetworkData.clothes, playerNetworkData.materials);
             }
         }
 
@@ -271,17 +282,26 @@ namespace Example
 					{
                         foreach (var collider in colliders)
                         {
-                            if (collider.TryGetComponent(out NetworkObject localPlayer)&& localPlayer.InputAuthority!=Object.InputAuthority)
+                            if (collider.TryGetComponent(out NetworkObject hurtPlayer)&& hurtPlayer.InputAuthority!=Object.InputAuthority)
                             {
                                 //Debug.Log(localPlayer.InputAuthority);
                                 //Debug.Log(localPlayer.StateAuthority);
 
-                                if (GameManager.Instance.playerDict.TryGetValue(localPlayer.InputAuthority, out PlayerNetworkData playerNetworkData))
+                                if (GameManager.Instance.playerDict.TryGetValue(hurtPlayer.InputAuthority, out PlayerNetworkData hurtPlayerNetworkData))
 								{
-									playerNetworkData.TakeDamage_RPC(1);
-									playerNetworkData.SetIsHurt_RPC(true);
+									if (hurtPlayerNetworkData.hp == 1)
+									{
+										if (GameManager.Instance.playerDict.TryGetValue(Object.InputAuthority, out PlayerNetworkData playerNetworkData))
+                                            playerNetworkData.SetDead_RPC(false,hurtPlayerNetworkData.clothes);
+
+										hurtPlayerNetworkData.SetDead_RPC(true,ClothesName.None);
+									}
+									else
+									{
+                                        hurtPlayerNetworkData.TakeDamage_RPC(1);
+                                        hurtPlayerNetworkData.SetIsHurt_RPC(true);
+                                    }
                                 }
-                                    
                             }
 
                             Debug.Log(collider + "/" + collider.GetComponent<NetworkObject>().InputAuthority + "：" + colliders.Length);
@@ -305,7 +325,7 @@ namespace Example
 				//隱身功能
                 if (Input.WasActivated(EGameplayInputAction.Invisibility) == true)
                 {
-                    if (GameManager.Instance.playerDict.TryGetValue(Object.InputAuthority, out PlayerNetworkData playerNetworkData)&& playerNetworkData.isInvisibility==false)
+                    if (GameManager.Instance.playerDict.TryGetValue(Object.InputAuthority, out PlayerNetworkData playerNetworkData)&& playerNetworkData.isDead == false && playerNetworkData.isInvisibility==false)
 					{
                         playerNetworkData.SetInvisibility_RPC(true);
 

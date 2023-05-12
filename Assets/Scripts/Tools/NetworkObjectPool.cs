@@ -12,6 +12,8 @@ public class NetworkObjectPool
     {
         NetworkObject newObj = null;
 
+        //Debug.Log(_free+"¡G"+ _free.Count);
+
         while (_free.Count>0&& newObj == null)
         {
             var obj = _free[0];

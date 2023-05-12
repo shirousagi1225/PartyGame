@@ -26,20 +26,20 @@ public class SafeAreaManager : Singleton<SafeAreaManager>
 
     private void OnEnable()
     {
-        EventHandler.StartGameEvent += OnStartGameEvent;
-        EventHandler.SafeAreaOpenEvent += OnSafeAreaOpenEvent;
-        EventHandler.SafeAreaRoomCountUpdateEvent += OnSafeAreaRoomCountUpdateEvent;
-        EventHandler.SafeAreaCloseEvent += OnSafeAreaCloseEvent;
-        EventHandler.RemakeRoundEvent += OnRemakeRoundEvent;
+        CustomEventHandler.StartGameEvent += OnStartGameEvent;
+        CustomEventHandler.SafeAreaOpenEvent += OnSafeAreaOpenEvent;
+        CustomEventHandler.SafeAreaRoomCountUpdateEvent += OnSafeAreaRoomCountUpdateEvent;
+        CustomEventHandler.SafeAreaCloseEvent += OnSafeAreaCloseEvent;
+        CustomEventHandler.RemakeRoundEvent += OnRemakeRoundEvent;
     }
 
     private void OnDisable()
     {
-        EventHandler.StartGameEvent -= OnStartGameEvent;
-        EventHandler.SafeAreaOpenEvent -= OnSafeAreaOpenEvent;
-        EventHandler.SafeAreaRoomCountUpdateEvent -= OnSafeAreaRoomCountUpdateEvent;
-        EventHandler.SafeAreaCloseEvent -= OnSafeAreaCloseEvent;
-        EventHandler.RemakeRoundEvent -= OnRemakeRoundEvent;
+        CustomEventHandler.StartGameEvent -= OnStartGameEvent;
+        CustomEventHandler.SafeAreaOpenEvent -= OnSafeAreaOpenEvent;
+        CustomEventHandler.SafeAreaRoomCountUpdateEvent -= OnSafeAreaRoomCountUpdateEvent;
+        CustomEventHandler.SafeAreaCloseEvent -= OnSafeAreaCloseEvent;
+        CustomEventHandler.RemakeRoundEvent -= OnRemakeRoundEvent;
     }
 
     //開始遊戲事件

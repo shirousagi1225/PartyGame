@@ -603,6 +603,7 @@ MonoBehaviour:
   runner: {fileID: 473220844}
   playerCanvas: {fileID: 1441603512}
   playerName: 
+  gameNetworkData: {fileID: 0}
 --- !u!114 &473220846
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -751,6 +752,7 @@ GameObject:
   - component: {fileID: 507518726}
   - component: {fileID: 507518727}
   - component: {fileID: 507518725}
+  - component: {fileID: 507518728}
   m_Layer: 0
   m_Name: ObjectPoolManager
   m_TagString: Untagged
@@ -815,6 +817,19 @@ MonoBehaviour:
   NetworkedBehaviours:
   - {fileID: 507518725}
   SimulationBehaviours: []
+--- !u!114 &507518728
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 507518724}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 82f0cc7b7476f824e970ad1a7f37430b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ignorePrefabType: 2
 --- !u!1 &525005104
 GameObject:
   m_ObjectHideFlags: 0
@@ -2491,7 +2506,7 @@ RectTransform:
   m_AnchorMin: {x: 1, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
   m_AnchoredPosition: {x: -80, y: -5}
-  m_SizeDelta: {x: 68, y: 104}
+  m_SizeDelta: {x: 88, y: 75}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2021594058
 MonoBehaviour:
@@ -2513,7 +2528,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 897639442, guid: bf96c5e9820d1e04eb9aa7aa6f5098d6, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1

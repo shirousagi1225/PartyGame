@@ -24,6 +24,7 @@ public class GameManager : Singleton<GameManager>, IPanel
     [SerializeField] private CanvasGroup playerCanvas = null;
     public string playerName = null;
     public Dictionary<PlayerRef, PlayerNetworkData> playerDict = new Dictionary<PlayerRef, PlayerNetworkData>();
+    [HideInInspector]public GameNetworkData gameNetworkData=null;
 
     protected override void Awake()
     {
@@ -34,12 +35,58 @@ public class GameManager : Singleton<GameManager>, IPanel
 
     private void OnEnable()
     {
-        EventHandler.StartGameEvent += OnStartGameEvent;
+        CustomEventHandler.LoadScenesScheduleEvent += OnLoadScenesScheduleEvent;
+        CustomEventHandler.InitDataEvent += OnInitDataEvent;
+        CustomEventHandler.LoadScheduleEvent += OnLoadScheduleEvent;
+        CustomEventHandler.StartGameEvent += OnStartGameEvent;
     }
 
     private void OnDisable()
     {
-        EventHandler.StartGameEvent -= OnStartGameEvent;
+        CustomEventHandler.LoadScenesScheduleEvent -= OnLoadScenesScheduleEvent;
+        CustomEventHandler.InitDataEvent -= OnInitDataEvent;
+        CustomEventHandler.LoadScheduleEvent -= OnLoadScheduleEvent;
+        CustomEventHandler.StartGameEvent -= OnStartGameEvent;
+    }
+
+    //加載場景進度事件
+    private void OnLoadScenesScheduleEvent()
+    {
+        while (gameNetworkData.readyCount != playerDict.Count)
+            continue;
+    }
+
+    //初始化資料事件
+    private void OnInitDataEvent()
+    {
+        if(playerDict.TryGetValue(runner.LocalPlayer, out PlayerNetworkData playerNetworkData))
+        {
+            while (!playerNetworkData.isInitData)
+            {
+                int readyPlayer = 0;
+
+                foreach(var player in playerDict.Values)
+                {
+                    if(player.materials.Length!=0)
+                        readyPlayer++;
+                }
+
+                //Debug.Log(playerNetworkData.playerName+ "："+playerDict.Count+"---"+ readyPlayer);
+
+                if(readyPlayer== playerDict.Count)
+                    playerNetworkData.SetIsInitData_RPC(true);
+            }
+        }
+    }
+
+    //載入進度事件
+    private void OnLoadScheduleEvent()
+    {
+        foreach(var player in playerDict.Values)
+        {
+            while (!player.isInitData)
+                continue;
+        }
     }
 
     //開始遊戲事件
@@ -66,7 +113,7 @@ public class GameManager : Singleton<GameManager>, IPanel
 
     public void UpdatePlayerList()
     {
-        EventHandler.CallPlayerListUpdateEvent();
+        CustomEventHandler.CallPlayerListUpdateEvent();
 
         if (CheckAllPlayerIsReady())
             Runner.SetActiveScene("PlayMap01");

@@ -17,5 +17,6 @@ public class ClothesDataList_SO : ScriptableObject
 public class ClothesDetails
 {
     public ClothesName clothesName;
+    public Texture2D clothesTexture;
     public List<FeatureName> featureList;
 }

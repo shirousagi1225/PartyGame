@@ -15,17 +15,37 @@ MonoBehaviour:
   taskDetailsList:
   - featureName: 1
     featureText: "\u7537\u5B69"
+    featureSprite: {fileID: 0}
   - featureName: 2
     featureText: "\u5973\u5B69"
+    featureSprite: {fileID: 0}
   - featureName: 3
     featureText: "\u8C93\u9762\u5177"
+    featureSprite: {fileID: 0}
   - featureName: 4
     featureText: "\u5154\u9762\u5177"
+    featureSprite: {fileID: 0}
   - featureName: 5
-    featureText: "\u4E0A\u886301"
-  - featureName: 6
-    featureText: "\u4E0A\u886302"
-  - featureName: 7
     featureText: "\u77ED\u8932"
-  - featureName: 8
+    featureSprite: {fileID: 0}
+  - featureName: 6
     featureText: "\u88D9\u5B50"
+    featureSprite: {fileID: 0}
+  - featureName: 7
+    featureText: "\u9AEE\u8272-\u4EAE\u8272\u7CFB"
+    featureSprite: {fileID: 0}
+  - featureName: 8
+    featureText: "\u9AEE\u8272-\u6697\u8272\u7CFB"
+    featureSprite: {fileID: 0}
+  - featureName: 9
+    featureText: "\u4E0A\u8863-\u914D\u98FE"
+    featureSprite: {fileID: 0}
+  - featureName: 10
+    featureText: "\u4E0A\u8863-\u82B1\u683C\u5B50"
+    featureSprite: {fileID: 0}
+  - featureName: 11
+    featureText: "\u4E0A\u8863-\u53E3\u888B"
+    featureSprite: {fileID: 0}
+  - featureName: 12
+    featureText: "\u4E0A\u8863-\u5370\u82B1"
+    featureSprite: {fileID: 0}

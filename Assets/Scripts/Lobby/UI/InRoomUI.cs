@@ -17,12 +17,12 @@ public class InRoomUI : MonoBehaviour,IPanel
     private void OnEnable()
     {
         gameManager = GameManager.Instance;
-        EventHandler.PlayerListUpdateEvent += OnPlayerListUpdateEvent;
+        CustomEventHandler.PlayerListUpdateEvent += OnPlayerListUpdateEvent;
     }
 
     private void OnDisable()
     {
-        EventHandler.PlayerListUpdateEvent -= OnPlayerListUpdateEvent;
+        CustomEventHandler.PlayerListUpdateEvent -= OnPlayerListUpdateEvent;
     }
 
     private void OnPlayerListUpdateEvent()

@@ -10,7 +10,7 @@ public class WeaponProp : NetworkBehaviour
     //¬B¨úªZ¾¹
     public void PickUpWeapon(NetworkObject localPlayer)
     {
-        EventHandler.CallPickUpWeaponEvent(weaponName, localPlayer);
+        CustomEventHandler.CallPickUpWeaponEvent(weaponName, localPlayer);
         GameManager.Instance.Runner.Despawn(Object);
     }
 }

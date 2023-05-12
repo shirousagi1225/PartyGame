@@ -15,6 +15,7 @@ public class ObjectPoolManager : NetworkSingleton<ObjectPoolManager>
     [SerializeField]private List<Transform> weaponSpawnPointList;
 
     private Dictionary<int, WeaponName> weaponDict = new ();
+    private List<NetworkObject> spawnedWeaponList = new();
     private HashSet<int> weaponSpawnedPoints=new HashSet<int> ();
     private int _playerCount;
     private float weaponProbability;
@@ -26,16 +27,16 @@ public class ObjectPoolManager : NetworkSingleton<ObjectPoolManager>
 
     private void OnEnable()
     {
-        EventHandler.StartGameEvent += OnStartGameEvent;
-        EventHandler.PickUpWeaponEvent += OnPickUpWeaponEvent;
-        EventHandler.RemakeRoundEvent += OnRemakeRoundEvent;
+        CustomEventHandler.StartGameEvent += OnStartGameEvent;
+        CustomEventHandler.PickUpWeaponEvent += OnPickUpWeaponEvent;
+        CustomEventHandler.RemakeRoundEvent += OnRemakeRoundEvent;
     }
 
     private void OnDisable()
     {
-        EventHandler.StartGameEvent -= OnStartGameEvent;
-        EventHandler.PickUpWeaponEvent -= OnPickUpWeaponEvent;
-        EventHandler.RemakeRoundEvent -= OnRemakeRoundEvent;
+        CustomEventHandler.StartGameEvent -= OnStartGameEvent;
+        CustomEventHandler.PickUpWeaponEvent -= OnPickUpWeaponEvent;
+        CustomEventHandler.RemakeRoundEvent -= OnRemakeRoundEvent;
     }
 
     //開始遊戲事件
@@ -55,7 +56,7 @@ public class ObjectPoolManager : NetworkSingleton<ObjectPoolManager>
     //重製回合事件
     private void OnRemakeRoundEvent()
     {
-        
+        DespawnAllWeapons();
     }
 
     //間接獲取武器資料
@@ -87,6 +88,7 @@ public class ObjectPoolManager : NetworkSingleton<ObjectPoolManager>
     }
 
     //生成武器(回合開始時)
+    //有待修正：目前因物件生成皆是在主機端統一生成,因此造成客戶端無法使用物件池功能,導致每次回合重置客戶端都會在生成一批物件,而不是從物件池取出
     private void SpawnWeaponStart(NetworkRunner runner,int spawnCount)
     {
         int pointNum;
@@ -96,11 +98,13 @@ public class ObjectPoolManager : NetworkSingleton<ObjectPoolManager>
             while (weaponSpawnedPoints.Contains(pointNum=UnityEngine.Random.Range(0, weaponSpawnPointList.Count)))
                 continue;
 
-            runner.Spawn(weaponData.GetWeaponDetails(weaponDict[AlgorithmManager.Instance.ChooseResult(weaponProbability, weaponDict.Count)]).weaponProp,
-                weaponSpawnPointList[pointNum].position, Quaternion.identity);
+            spawnedWeaponList.Add(runner.Spawn(weaponData.GetWeaponDetails(weaponDict[AlgorithmManager.Instance.ChooseResult(weaponProbability, weaponDict.Count)]).weaponProp,
+                weaponSpawnPointList[pointNum].position, Quaternion.identity));
             weaponSpawnedPoints.Add(pointNum);
             //Debug.Log(runner.GameMode.ToString()+"：Weapon has spawn");
         }
+
+        weaponSpawnedPoints.Clear();
     }
 
     //生成武器(拾取武器時)：用於拾取武器,根據玩家目前武器欄是否有武器做區分
@@ -129,5 +133,19 @@ public class ObjectPoolManager : NetworkSingleton<ObjectPoolManager>
 
             //Debug.Log("Weapon has spawn");
         }
+    }
+
+    //移除全部武器(重製回合時)
+    private void DespawnAllWeapons()
+    {
+        foreach(var weapon in spawnedWeaponList)
+        {
+            if (weapon.enabled)
+                GameManager.Instance.Runner.Despawn(weapon);
+        }
+
+        spawnedWeaponList.Clear();
+
+        SpawnWeaponStart(GameManager.Instance.Runner, _playerCount + weaponSpawnValue);
     }
 }

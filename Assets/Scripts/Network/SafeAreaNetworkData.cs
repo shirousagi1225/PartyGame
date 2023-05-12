@@ -38,7 +38,7 @@ public class SafeAreaNetworkData : NetworkBehaviour
             {
                 Debug.Log(safeAreaOpenTime);
                 SetCaption_RPC(safeAreaOpenHint, 0);
-                EventHandler.CallSafeAreaOpenEvent();
+                CustomEventHandler.CallSafeAreaOpenEvent();
             }
             else if (attackTimer.RemainingTicks(gameManager.Runner) == attackStartTime*60)
             {
@@ -53,7 +53,7 @@ public class SafeAreaNetworkData : NetworkBehaviour
             else if (attackTimer.RemainingTicks(gameManager.Runner) == 1f)
             {
                 Debug.Log(1);
-                EventHandler.CallSafeAreaCloseEvent();
+                CustomEventHandler.CallSafeAreaCloseEvent();
             }
         }
     }
@@ -73,6 +73,6 @@ public class SafeAreaNetworkData : NetworkBehaviour
 
     private static void OnCaptionChanged(Changed<SafeAreaNetworkData> changed)
     {
-        EventHandler.CallUseSafeAreaUIEvent(changed.Behaviour.caption, changed.Behaviour.roomCount);
+        CustomEventHandler.CallUseSafeAreaUIEvent(changed.Behaviour.caption, changed.Behaviour.roomCount);
     }
 }

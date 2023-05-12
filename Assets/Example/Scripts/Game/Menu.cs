@@ -131,13 +131,13 @@ namespace Example
 				}
 			}
 
-			float playerSpeed    = GetPlayerSpeed();
+			//float playerSpeed    = GetPlayerSpeed();
 			float inputSmoothing = GetInputSmoothing();
 
-			if (GUILayout.Button($"[+/-] Speed ({playerSpeed:F2}x)", _defaultStyle) == true)
+			/*if (GUILayout.Button($"[+/-] Speed ({playerSpeed:F2}x)", _defaultStyle) == true)
 			{
 				TogglePlayerSpeed();
-			}
+			}*/
 
 			if (GUILayout.Button($"[F4] Input Smoothing ({(int)(inputSmoothing * 1000.0f + 0.1f)}ms)", _defaultStyle) == true)
 			{

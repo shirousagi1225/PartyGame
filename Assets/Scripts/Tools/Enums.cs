@@ -10,7 +10,7 @@ public enum ClothesName
 
 public enum FeatureName
 {
-    None,Boy,Girl,CatMask,RabbitMask, Shirt01, Shirt02, Short, Skirt
+    None,Boy,Girl,CatMask,RabbitMask, Short, Skirt, Hair_Bright, Hair_Dark, Shirt_Accessories, Shirt_Plaid, Shirt_Pocket, Shirt_Printed
 }
 
 public enum SafeAreaCode

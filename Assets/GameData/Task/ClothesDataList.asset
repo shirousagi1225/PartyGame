@@ -14,14 +14,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   clothesDetailsList:
   - clothesName: 1
-    featureList: 010000000500000007000000
+    clothesTexture: {fileID: 2800000, guid: 2c4fdfb459b70074197a7f4f4bd10fae, type: 3}
+    featureList: 0100000003000000050000000800000009000000
   - clothesName: 2
-    featureList: 01000000030000000600000008000000
+    clothesTexture: {fileID: 2800000, guid: 6f16b36dc5b446b41b679f994ffeb63c, type: 3}
+    featureList: 010000000300000005000000070000000a0000000b000000
   - clothesName: 3
-    featureList: 01000000040000000500000007000000
+    clothesTexture: {fileID: 2800000, guid: dd0081e8294791a498366a06dd33214f, type: 3}
+    featureList: 010000000300000005000000070000000c000000
   - clothesName: 4
-    featureList: 020000000500000008000000
+    clothesTexture: {fileID: 2800000, guid: 632b99eaa0cae3548ab3d800db44d5c6, type: 3}
+    featureList: 0100000003000000050000000800000009000000
   - clothesName: 5
-    featureList: 02000000030000000600000007000000
+    clothesTexture: {fileID: 2800000, guid: 9951639baf9231a4a8f1b11d09aa5235, type: 3}
+    featureList: 010000000300000005000000080000000b0000000c000000
   - clothesName: 6
-    featureList: 02000000040000000500000008000000
+    clothesTexture: {fileID: 2800000, guid: 7b878c06a732eb042acae83773bf4cc9, type: 3}
+    featureList: 010000000300000005000000080000000a000000

@@ -10,12 +10,12 @@ public class StateUI : MonoBehaviour
 
     private void OnEnable()
     {
-        EventHandler.StateUIUpdateEvent += OnStateUIUpdateEvent;
+        CustomEventHandler.StateUIUpdateEvent += OnStateUIUpdateEvent;
     }
 
     private void OnDisable()
     {
-        EventHandler.StateUIUpdateEvent -= OnStateUIUpdateEvent;
+        CustomEventHandler.StateUIUpdateEvent -= OnStateUIUpdateEvent;
     }
 
     //狀態UI更新事件

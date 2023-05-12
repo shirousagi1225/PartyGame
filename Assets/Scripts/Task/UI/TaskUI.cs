@@ -10,12 +10,12 @@ public class TaskUI : MonoBehaviour
 
     private void OnEnable()
     {
-        EventHandler.TaskUIUpdateEvent += OnTaskUIUpdateEvent;
+        CustomEventHandler.TaskUIUpdateEvent += OnTaskUIUpdateEvent;
     }
 
     private void OnDisable()
     {
-        EventHandler.TaskUIUpdateEvent -= OnTaskUIUpdateEvent;
+        CustomEventHandler.TaskUIUpdateEvent -= OnTaskUIUpdateEvent;
     }
 
     //任務UI更新事件

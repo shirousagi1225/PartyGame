@@ -16,7 +16,7 @@ MonoBehaviour:
   - weaponName: 1
     weaponProp: {fileID: 0}
     weapon: {fileID: 0}
-    weaponSprite: {fileID: 1120262385, guid: a6a03e47ad116c044964daa80c93649f, type: 3}
+    weaponSprite: {fileID: 897639442, guid: bf96c5e9820d1e04eb9aa7aa6f5098d6, type: 3}
   - weaponName: 2
     weaponProp: {fileID: 3448078300665542871, guid: 454ceffd4554b5b40a62e9993688977e,
       type: 3}

@@ -11,12 +11,12 @@ public class SafeAreaUI : MonoBehaviour, IPanel
 
     private void OnEnable()
     {
-        EventHandler.UseSafeAreaUIEvent += OnUseSafeAreaUIEvent;
+        CustomEventHandler.UseSafeAreaUIEvent += OnUseSafeAreaUIEvent;
     }
 
     private void OnDisable()
     {
-        EventHandler.UseSafeAreaUIEvent -= OnUseSafeAreaUIEvent;
+        CustomEventHandler.UseSafeAreaUIEvent -= OnUseSafeAreaUIEvent;
     }
 
     //顯示提示事件

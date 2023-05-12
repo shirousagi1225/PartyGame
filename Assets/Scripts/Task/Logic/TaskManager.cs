@@ -4,6 +4,7 @@ using Fusion;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 
 public class TaskManager : Singleton<TaskManager>
@@ -25,23 +26,38 @@ public class TaskManager : Singleton<TaskManager>
 
     private void OnEnable()
     {
-        EventHandler.StartGameEvent += OnStartGameEvent;
-        EventHandler.TaskUpdateEvent += OnTaskUpdateEvent;
-        EventHandler.RemakeRoundEvent += OnRemakeRoundEvent;
+        CustomEventHandler.StartGameEvent += OnStartGameEvent;
+        CustomEventHandler.SetClothesEvent += OnSetClothesEvent;
+        CustomEventHandler.TaskUpdateEvent += OnTaskUpdateEvent;
+        CustomEventHandler.CheckTargetEvent += OnCheckTargetEvent;
+        CustomEventHandler.RemakeRoundEvent += OnRemakeRoundEvent;
     }
 
     private void OnDisable()
     {
-        EventHandler.StartGameEvent -= OnStartGameEvent;
-        EventHandler.TaskUpdateEvent -= OnTaskUpdateEvent;
-        EventHandler.RemakeRoundEvent -= OnRemakeRoundEvent;
+        CustomEventHandler.StartGameEvent -= OnStartGameEvent;
+        CustomEventHandler.SetClothesEvent -= OnSetClothesEvent;
+        CustomEventHandler.TaskUpdateEvent -= OnTaskUpdateEvent;
+        CustomEventHandler.CheckTargetEvent -= OnCheckTargetEvent;
+        CustomEventHandler.RemakeRoundEvent -= OnRemakeRoundEvent;
     }
 
     //開始遊戲事件
     private void OnStartGameEvent(NetworkRunner runner, int playerCount)
     {
         if (gameManager.Runner.GameMode == GameMode.Host)
+        {
             AssignClothes(runner);
+        }
+    }
+
+    //設置服裝事件
+    private void OnSetClothesEvent(ClothesName clothesName, Material[] materials)
+    {
+        foreach (Material material in materials)
+            material.SetTexture("_Albedo", clothesData.GetClothesDetails(clothesName).clothesTexture);
+
+        //Debug.Log("PlayerNetworkData："+materials.Length);
     }
 
     //獵殺任務更新事件
@@ -51,10 +67,24 @@ public class TaskManager : Singleton<TaskManager>
             RemoveTask(playerNetworkData);
     }
 
+    //確認目標事件
+    private bool OnCheckTargetEvent(FeatureName task, ClothesName clothesName)
+    {
+        if (clothesData.GetClothesDetails(clothesName).featureList.Contains(task))
+        {
+            foreach (var playerNetworkData in gameManager.playerDict.Values)
+                playerNetworkData.SetRemakeRound_RPC(true);
+
+            return true;
+        }
+        else
+            return false;
+    }
+
     //重製回合事件
     private void OnRemakeRoundEvent()
     {
-        //RemakeTaskDict();
+        RemakeTaskDict();
     }
 
     //間接獲取獵殺任務資料
@@ -64,6 +94,7 @@ public class TaskManager : Singleton<TaskManager>
     }
 
     //新增獵殺任務(用於初始化任務清單)
+    //注意：特徵種類有進行修改時,需至TaskNetworkData修改任務清單的容量大小
     private void AddTask(FeatureName featureName)
     {
         if (!taskNetworkData.initTaskDict.ContainsKey(featureName))
@@ -134,6 +165,9 @@ public class TaskManager : Singleton<TaskManager>
     //重製獵殺任務清單
     private void RemakeTaskDict()
     {
+        taskNetworkData.changeTaskList.Clear();
+        taskNetworkData.changeTaskDict.Clear();
+
         for (int i = 0; i < taskNetworkData.initTaskList.Count; i++)
         {
             taskNetworkData.changeTaskList.Add(taskNetworkData.initTaskList[i]);
@@ -153,12 +187,15 @@ public class TaskManager : Singleton<TaskManager>
 
             foreach (var playerNetworkData in gameManager.playerDict.Values)
             {
-                var featureList = clothesData.GetClothesDetails(playerNetworkData.clothes).featureList;
+                if (!playerNetworkData.isDead)
+                {
+                    var featureList = clothesData.GetClothesDetails(playerNetworkData.clothes).featureList;
 
-                while (taskNetworkData.changeTaskDict[taskNetworkData.changeTaskList[pointNum = AlgorithmManager.Instance.ChooseResult(taskProbability, taskNetworkData.changeTaskDict.Count)]] == 1 && featureList.Contains(taskNetworkData.changeTaskList[pointNum]))
-                    continue;
+                    while (taskNetworkData.changeTaskDict[taskNetworkData.changeTaskList[pointNum = AlgorithmManager.Instance.ChooseResult(taskProbability, taskNetworkData.changeTaskDict.Count)]] == 1 && featureList.Contains(taskNetworkData.changeTaskList[pointNum]))
+                        continue;
 
-                playerNetworkData.SetTask_RPC(taskNetworkData.changeTaskList[pointNum]);
+                    playerNetworkData.SetTask_RPC(taskNetworkData.changeTaskList[pointNum]);
+                }
             }
         }    
     }

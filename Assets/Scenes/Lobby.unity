@@ -1226,6 +1226,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 337514b8020614d45ba51f2ee66c069a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gameNetworkDataPrefab: {fileID: 7329235124131270880, guid: 0ee958bee95219141b29ebb7fcf2f1f3,
+    type: 3}
   playerNetworkDataPrefab: {fileID: 8344748686339569346, guid: 1c8ed14323a5f064180fe0d58bd281b1,
     type: 3}
   roomListUI: {fileID: 1538125018}

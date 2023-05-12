@@ -4,7 +4,7 @@ using System.Globalization;
 using UnityEngine;
 using UnityEngine.UI;
 
-public static class EventHandler
+public static class CustomEventHandler
 {
     public static event Action BeforeSceneUnloadEvent;
     public static void CallBeforeSceneUnloadEvent()
@@ -22,6 +22,24 @@ public static class EventHandler
     public static void CallShowSecUIEvent(string canvas,bool canOpenSecUI,bool canSwitch)
     {
         ShowSecUIEvent?.Invoke(canvas,canOpenSecUI, canSwitch);
+    }
+
+    public static event Action InitDataEvent;
+    public static void CallInitDataEvent()
+    {
+        InitDataEvent?.Invoke();
+    }
+
+    public static event Action LoadScheduleEvent;
+    public static void CallLoadScheduleEvent()
+    {
+        LoadScheduleEvent?.Invoke();
+    }
+
+    public static event Action LoadScenesScheduleEvent;
+    public static void CallLoadScenesScheduleEvent()
+    {
+        LoadScenesScheduleEvent?.Invoke();
     }
 
     public static event Action<NetworkRunner,int> StartGameEvent;
@@ -42,10 +60,28 @@ public static class EventHandler
         PlayerListUpdateEvent?.Invoke();
     }
 
+    public static event Action<ClothesName, Material[]> SetClothesEvent;
+    public static void CallSetClothesEvent(ClothesName clothesName, Material[] materials)
+    {
+        SetClothesEvent?.Invoke(clothesName, materials);
+    }
+
     public static event Action<PlayerNetworkData> TaskUpdateEvent;
     public static void CallTaskUpdateEvent(PlayerNetworkData playerNetworkData)
     {
         TaskUpdateEvent?.Invoke(playerNetworkData);
+    }
+
+    public static event Func<FeatureName, ClothesName,bool> CheckTargetEvent;
+    public static bool CallCheckTargetEvent(FeatureName task, ClothesName clothesName)
+    {
+        if(CheckTargetEvent!=null)
+            return CheckTargetEvent(task, clothesName);
+        else
+        {
+            Debug.LogError("CallCheckTargetEventµù¥U¥¢±Ñ!!!");
+            return true;
+        } 
     }
 
     public static event Action<FeatureName> TaskUIUpdateEvent;

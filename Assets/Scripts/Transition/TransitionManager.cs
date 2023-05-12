@@ -26,7 +26,7 @@ public class TransitionManager : Singleton<TransitionManager>
 
     private IEnumerator TransitionToScene(string form, string to)
     {
-        EventHandler.CallBeforeSceneUnloadEvent();
+        CustomEventHandler.CallBeforeSceneUnloadEvent();
 
         yield return SceneManager.UnloadSceneAsync(form);
         yield return SceneManager.LoadSceneAsync(to, LoadSceneMode.Additive);
@@ -34,6 +34,6 @@ public class TransitionManager : Singleton<TransitionManager>
         Scene newScene = SceneManager.GetSceneAt(SceneManager.sceneCount - 1);
         SceneManager.SetActiveScene(newScene);
 
-        EventHandler.CallAfterSceneLoadedEvent();
+        CustomEventHandler.CallAfterSceneLoadedEvent();
     }
 }
