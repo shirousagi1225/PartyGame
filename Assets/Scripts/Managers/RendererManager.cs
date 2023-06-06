@@ -9,9 +9,9 @@ using UnityEngine.VFX;
 public class RendererManager : Singleton<RendererManager>
 {
     //測試用,之後要改到動畫邏輯內
-    public AnimationDataList_SO animationData;
+    public MoveAniDataList_SO moveAniData;
 
-    [Header("溶解特效設置")]
+    [Header("溶解特效參數設置")]
     [SerializeField] private float dissolveRate = 0.0125f;
     [SerializeField] private float refreshRate = 0.025f;
 
@@ -27,9 +27,9 @@ public class RendererManager : Singleton<RendererManager>
 
     //測試用,之後要加到動畫邏輯內
     //熱擾動控制
-    public void HeatDistortionCtrl(VisualEffect[] VFXs, AnimationType aniType)
+    public void HeatDistortionCtrl(VisualEffect[] VFXs, MoveAniType aniType)
     {
-        VFXs[1].SetAnimationCurve("HeatDistortion", animationData.GetAniDetails(aniType).HeatDistortionRate);
+        VFXs[1].SetAnimationCurve("HeatDistortion", moveAniData.GetMoveAniDetails(aniType).HeatDistortionRate);
         //Debug.Log(VFXs[1].GetAnimationCurve("HeatDistortion").keys);
     }
 
@@ -58,14 +58,17 @@ public class RendererManager : Singleton<RendererManager>
             VFXs[1].Play();
 
         StartCoroutine(DissolveRelieve(playerRef, playerNetworkData, VFXs, materials, time, CDTime, stiffTime));
+
+        HeatDistortionCtrl(VFXs, playerNetworkData.moveAniType);
     }
 
     //溶解解除
     private IEnumerator DissolveRelieve(PlayerRef playerRef, PlayerNetworkData playerNetworkData, VisualEffect[] VFXs, Material[] materials, float time, float CDTime, float stiffTime)
     {
+        CustomEventHandler.CallSkillUIUpdateEvent(SkillType.Invisibility, true, time, CDTime);
         yield return StartCoroutine(SkillTime(playerNetworkData, time));
 
-        CustomEventHandler.CallPlayerStiffEvent(playerRef, true);
+        //CustomEventHandler.CallPlayerStiffEvent(playerRef, true);
 
         if (VFXs.GetValue(1) != null)
             VFXs[1].Stop();
@@ -85,8 +88,10 @@ public class RendererManager : Singleton<RendererManager>
             }
         }
 
+        CustomEventHandler.CallSkillUIUpdateEvent(SkillType.Invisibility, false, time, CDTime);
+
         yield return new WaitForSeconds(stiffTime);
-        CustomEventHandler.CallPlayerStiffEvent(playerRef, false);
+        //CustomEventHandler.CallPlayerStiffEvent(playerRef, false);
 
         yield return new WaitForSeconds(CDTime- stiffTime);
 

@@ -120,72 +120,9 @@ TextureImporter:
       name: PlayUI2_0
       rect:
         serializedVersion: 2
-        x: 31
+        x: 80
         y: 198
-        width: 40
-        height: 22
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 860dfa0b8566b574aa388ad0ad2eedf3
-      internalID: 2041700328
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: PlayUI2_1
-      rect:
-        serializedVersion: 2
-        x: 95
-        y: 198
-        width: 36
-        height: 22
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 5f165298953224544aeb93eb8ab95b0f
-      internalID: -862398828
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: PlayUI2_2
-      rect:
-        serializedVersion: 2
-        x: 161
-        y: 198
-        width: 36
-        height: 23
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: af0c1c91e89882d4ab21d849e94a5e5b
-      internalID: 472541088
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: PlayUI2_3
-      rect:
-        serializedVersion: 2
-        x: 226
-        y: 198
-        width: 36
+        width: 201
         height: 24
       alignment: 0
       pivot: {x: 0, y: 0}
@@ -194,35 +131,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 8c6998ce5cb2bd249ba9b45371ce7006
-      internalID: -946893209
+      spriteID: 7b21384c5c58b6443a0142d2be83a645
+      internalID: -400729734
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: PlayUI2_4
-      rect:
-        serializedVersion: 2
-        x: 277
-        y: 199
-        width: 57
-        height: 23
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 2d6fd47f337bec645954a786b4fe56c4
-      internalID: 681060827
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: PlayUI2_5
+      name: PlayUI2_1
       rect:
         serializedVersion: 2
         x: 80
@@ -236,14 +152,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: ae517ed29fef8f945bdb661630fc240b
-      internalID: 2019704929
+      spriteID: 42962d000d31b6f44a4124995521008c
+      internalID: 1807817221
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: PlayUI2_6
+      name: PlayUI2_2
       rect:
         serializedVersion: 2
         x: 60
@@ -257,14 +173,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 2497759586190294bad891cdf437d657
-      internalID: 838135394
+      spriteID: e8f62d9f3fce417478dc2d751b03f422
+      internalID: -613311745
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: PlayUI2_7
+      name: PlayUI2_3
       rect:
         serializedVersion: 2
         x: 60
@@ -278,14 +194,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: fa8cc017eae491b41a81f4aeb01ed2bb
-      internalID: -450051933
+      spriteID: cb377785fa2c60c4a9cf053081000813
+      internalID: 638787745
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: PlayUI2_8
+      name: PlayUI2_4
       rect:
         serializedVersion: 2
         x: 0
@@ -299,14 +215,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: b94821c4ebada36409375f02bcadb4ca
-      internalID: 897639442
+      spriteID: 499164c0e8e388c4e83765c7ebc0e1cb
+      internalID: 511540770
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: PlayUI2_9
+      name: PlayUI2_5
       rect:
         serializedVersion: 2
         x: 109
@@ -320,14 +236,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: af56751ef08456b43ad82d8f4371afd4
-      internalID: 1907968838
+      spriteID: e1eee3203c8deaf4a9457c051277d2ea
+      internalID: -2038898562
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: PlayUI2_10
+      name: PlayUI2_6
       rect:
         serializedVersion: 2
         x: 202
@@ -341,14 +257,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: ffcb1b6f4e193c643880da8419cdea16
-      internalID: -1009833959
+      spriteID: 7ad6841b05ffcce4a85f3444cfbf58a7
+      internalID: 675499037
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: PlayUI2_11
+      name: PlayUI2_7
       rect:
         serializedVersion: 2
         x: 293
@@ -362,8 +278,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 40bb9e58b36b69c48ab6b832d27d921d
-      internalID: -1769063870
+      spriteID: 3b3bf4021a2cbbb4d9599bdbabd93f53
+      internalID: -628482051
       vertices: []
       indices: 
       edges: []
@@ -371,7 +287,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: 930f037f97869a941b2b5c88b388c588
+    spriteID: 264fb3abd0480eb4289a993d270e34be
     internalID: 0
     vertices: []
     indices: 
@@ -379,18 +295,14 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      PlayUI2_8: 897639442
-      PlayUI2_11: -1769063870
-      PlayUI2_10: -1009833959
-      PlayUI2_0: 2041700328
-      PlayUI2_9: 1907968838
-      PlayUI2_6: 838135394
-      PlayUI2_4: 681060827
-      PlayUI2_7: -450051933
-      PlayUI2_2: 472541088
-      PlayUI2_5: 2019704929
-      PlayUI2_1: -862398828
-      PlayUI2_3: -946893209
+      PlayUI2_0: -400729734
+      PlayUI2_6: 675499037
+      PlayUI2_4: 511540770
+      PlayUI2_7: -628482051
+      PlayUI2_2: -613311745
+      PlayUI2_5: -2038898562
+      PlayUI2_1: 1807817221
+      PlayUI2_3: 638787745
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0

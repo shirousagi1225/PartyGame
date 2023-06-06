@@ -23,9 +23,19 @@ public enum ProbabilityType
     None, Clothes, Feature, Weapon
 }
 
-public enum AnimationType
+public enum MoveAniType
 {
-    None, QuietWalk, Walk, Run,Jump
+    None,Idle, QuietWalk, Walk, Run,Jump,
+}
+
+public enum ActionAniType
+{
+    None, Pickup, PunchAttack, PanAttack, RopeAttack,
+}
+
+public enum SkillType
+{
+    None, Invisibility,
 }
 
 public enum PairState

@@ -28,14 +28,18 @@ public class ObjectPoolManager : NetworkSingleton<ObjectPoolManager>
     private void OnEnable()
     {
         CustomEventHandler.StartGameEvent += OnStartGameEvent;
+        CustomEventHandler.PlayerAttackEvent += OnPlayerAttackEvent;
         CustomEventHandler.PickUpWeaponEvent += OnPickUpWeaponEvent;
+        CustomEventHandler.PlayerRebornEvent += OnPlayerRebornEvent;
         CustomEventHandler.RemakeRoundEvent += OnRemakeRoundEvent;
     }
 
     private void OnDisable()
     {
         CustomEventHandler.StartGameEvent -= OnStartGameEvent;
+        CustomEventHandler.PlayerAttackEvent -= OnPlayerAttackEvent;
         CustomEventHandler.PickUpWeaponEvent -= OnPickUpWeaponEvent;
+        CustomEventHandler.PlayerRebornEvent -= OnPlayerRebornEvent;
         CustomEventHandler.RemakeRoundEvent -= OnRemakeRoundEvent;
     }
 
@@ -46,11 +50,24 @@ public class ObjectPoolManager : NetworkSingleton<ObjectPoolManager>
         SpawnWeaponStart(runner,_playerCount + weaponSpawnValue);
     }
 
+    //玩家攻擊事件
+    private void OnPlayerAttackEvent(PlayerNetworkData playerNetworkData)
+    {
+        if (GameManager.Instance.Runner.GameMode == GameMode.Host)
+            AttackMode(playerNetworkData);
+    }
+
     //拾取武器事件
     private void OnPickUpWeaponEvent(WeaponName weaponName, NetworkObject localPlayer)
     {
         if (GameManager.Instance.Runner.GameMode == GameMode.Host)
             SpawnWeaponPickUp(weaponName, localPlayer);
+    }
+
+    //玩家重生事件
+    private void OnPlayerRebornEvent(PlayerRef playerRef)
+    {
+        DespawnAllWeapons();
     }
 
     //重製回合事件
@@ -117,9 +134,11 @@ public class ObjectPoolManager : NetworkSingleton<ObjectPoolManager>
         {
             //var spawnPos = localPlayer.GetComponent<ThirdPersonPlayer>().weaponTrans;
 
+            playerNetworkData.SetActionAniType_RPC(ActionAniType.Pickup);
+
             if (playerNetworkData.weapon != WeaponName.Fist)
             {
-                GameManager.Instance.Runner.Spawn(weaponData.GetWeaponDetails(playerNetworkData.weapon).weaponProp, localPlayer.transform.position+Vector3.up*0.4f, Quaternion.identity);
+                GameManager.Instance.Runner.Spawn(weaponData.GetWeaponDetails(playerNetworkData.weapon).weaponProp, localPlayer.transform.position+Vector3.up*0.7f, Quaternion.identity);
 
                 //runner.Despawn(spawnPos.GetChild(0).GetComponent<NetworkObject>());
                 //Destroy(spawnPos.GetChild(0).gameObject);
@@ -147,5 +166,22 @@ public class ObjectPoolManager : NetworkSingleton<ObjectPoolManager>
         spawnedWeaponList.Clear();
 
         SpawnWeaponStart(GameManager.Instance.Runner, _playerCount + weaponSpawnValue);
+    }
+
+    //攻擊模式
+    private void AttackMode(PlayerNetworkData playerNetworkData)
+    {
+        switch (playerNetworkData.weapon)
+        {
+            case WeaponName.Fist:
+                playerNetworkData.SetActionAniType_RPC(ActionAniType.PunchAttack);
+                break;
+            case WeaponName.Pan:
+                playerNetworkData.SetActionAniType_RPC(ActionAniType.PanAttack);
+                break;
+            case WeaponName.Jumprope:
+                playerNetworkData.SetActionAniType_RPC(ActionAniType.RopeAttack);
+                break;
+        }
     }
 }

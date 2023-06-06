@@ -29,8 +29,10 @@ namespace Example
 		[SerializeField] private VisualEffect[] VFXs;
 		private Material[] materials;
 
+        [Header("動畫設置")]
+        [SerializeField] private Animator playerAni;
+
         [Header("武器碰撞設置")]
-        [SerializeField] private GameObject weaponCol;
         public Transform weaponTrans;
         [SerializeField] private Vector3 colStartPos;
         [SerializeField] private Vector3 colEndPos;
@@ -64,16 +66,18 @@ namespace Example
                     this.materials = materials;
                 }
 
-                //初始化玩家角色對應網路資料(材質 VFX)
+                //初始化玩家角色對應網路資料(動畫 材質 VFX)
+                playerNetworkData.playerAni = playerAni;
+
                 playerNetworkData.materials = materials;
                 //Debug.Log(materials.Length);
                 //Debug.Log(playerNetworkData.materials.Length);
 
                 playerNetworkData.VFXs = VFXs;
-				
-                //Debug.Log("ThirdPersonPlayer：" + materials.Length);
 
-				if(playerNetworkData.clothes!=ClothesName.None)
+				//Debug.Log("ThirdPersonPlayer：" + materials.Length);
+
+                if (playerNetworkData.clothes!=ClothesName.None)
                     CustomEventHandler.CallSetClothesEvent(playerNetworkData.clothes, playerNetworkData.materials);
             }
         }
@@ -157,57 +161,82 @@ namespace Example
 
 			KCC.SetInputDirection(inputDirection);
 
+			//跳躍功能
 			if (Input.WasActivated(EGameplayInputAction.Jump) == true)
 			{
-				//測試用,之後要改到動畫邏輯內
-                //切換移動狀態：用於動畫及隱身功能切換(跳躍)
-                if (GameManager.Instance.Runner.GameMode == GameMode.Host)
-                    if (GameManager.Instance.playerDict.TryGetValue(Object.InputAuthority, out PlayerNetworkData playerNetworkData) && playerNetworkData.isInvisibility)
-					{
-                        playerNetworkData.SetAniType_RPC(AnimationType.Jump);
+				if (GameManager.Instance.playerDict.TryGetValue(Object.InputAuthority, out PlayerNetworkData playerNetworkData)&& playerNetworkData.actionAniType==ActionAniType.None)
+				{
+					//CustomEventHandler.CallSetJumpAniEvent(transform,playerAni);
+
+                    //測試用,之後要改到動畫邏輯內
+                    //切換移動狀態：用於動畫及隱身功能切換(跳躍)
+                    if (GameManager.Instance.Runner.GameMode == GameMode.Host)
+                    {
+                        playerNetworkData.SetMoveAniType_RPC(MoveAniType.Jump);
                         //Debug.Log(playerNetworkData.moveType);
                     }
 
-                // Is jump rotation invalid (not set)? Get it from other source.
-                if (jumpRotation.IsZero() == true)
-				{
-					// Is facing rotation valid? Use it.
-					if (facingRotation.IsZero() == false)
-					{
-						jumpRotation = facingRotation;
-					}
-					else
-					{
-						// Otherwise just jump forward.
-						jumpRotation = KCC.FixedData.TransformRotation;
-					}
-				}
+                    // Is jump rotation invalid (not set)? Get it from other source.
+                    if (jumpRotation.IsZero() == true)
+                    {
+                        // Is facing rotation valid? Use it.
+                        if (facingRotation.IsZero() == false)
+                        {
+                            jumpRotation = facingRotation;
+                        }
+                        else
+                        {
+                            // Otherwise just jump forward.
+                            jumpRotation = KCC.FixedData.TransformRotation;
+                        }
+                    }
 
-				// Is facing rotation invalid (not set)? Set it to the same rotation as jump.
-				if (facingRotation.IsZero() == true)
-				{
-					facingRotation = jumpRotation;
-				}
+                    // Is facing rotation invalid (not set)? Set it to the same rotation as jump.
+                    if (facingRotation.IsZero() == true)
+                    {
+                        facingRotation = jumpRotation;
+                    }
 
-				KCC.Jump(jumpRotation * JumpImpulse);
+                    KCC.Jump(jumpRotation * JumpImpulse);
+                }
 			}
 
 			// Notice we are checking KCC.FixedData because we are in fixed update code path (render update uses KCC.RenderData)
 			if (KCC.FixedData.IsGrounded == true)
 			{
-                //測試用,之後要改到動畫邏輯內
-                //切換移動狀態：用於動畫及隱身功能切換(跑步)
-                if (GameManager.Instance.Runner.GameMode == GameMode.Host)
-                    if (Input.FixedInput.Walk && Input.FixedInput.Sprint)
-                        if (GameManager.Instance.playerDict.TryGetValue(Object.InputAuthority, out PlayerNetworkData playerNetworkData) && playerNetworkData.isInvisibility)
+                if (GameManager.Instance.playerDict.TryGetValue(Object.InputAuthority, out PlayerNetworkData playerNetworkData)&& playerNetworkData.sp>0)
+				{
+                    //測試用,之後要改到動畫邏輯內
+                    //切換移動狀態：用於動畫及隱身功能切換(跑步)
+                    if (GameManager.Instance.Runner.GameMode == GameMode.Host)
+                        if (Input.FixedInput.Walk && Input.FixedInput.Sprint && Input.WasActivated(EGameplayInputAction.Jump) == false)
 						{
-							playerNetworkData.SetAniType_RPC(AnimationType.Run);
-							//Debug.Log(playerNetworkData.aniType);
-						} 
+                            playerNetworkData.SetMoveAniType_RPC(MoveAniType.Run);
+                            //Debug.Log(playerNetworkData.moveAniType);
+                        }
 
-                // Sprint is updated only when grounded
-                KCC.SetSprint(Input.FixedInput.Sprint);
-			}
+                    // Sprint is updated only when grounded
+                    KCC.SetSprint(Input.FixedInput.Sprint);
+                }else
+                    KCC.SetSprint(false);
+
+                //測試用,之後要改到動畫邏輯內
+                //切換移動狀態：用於動畫及隱身功能切換(走路)
+                if (GameManager.Instance.Runner.GameMode == GameMode.Host)
+                    if ((Input.FixedInput.Walk && !Input.FixedInput.Sprint && Input.WasActivated(EGameplayInputAction.Jump) == false))
+                        playerNetworkData.SetMoveAniType_RPC(MoveAniType.Walk);
+						//Debug.Log(playerNetworkData.moveAniType);
+
+                //測試用,之後要改到動畫邏輯內
+                //切換移動狀態：用於動畫及隱身功能切換(待機)
+                if (GameManager.Instance.Runner.GameMode == GameMode.Host)
+                    if (!Input.FixedInput.Walk && Input.WasActivated(EGameplayInputAction.Jump) == false)
+                        if (playerNetworkData.moveAniType != MoveAniType.Idle)
+                        {
+                            playerNetworkData.SetMoveAniType_RPC(MoveAniType.Idle);
+                            //Debug.Log(playerNetworkData.moveAniType);
+                        }
+            }
 
 			if (Input.WasActivated(EGameplayInputAction.Dash) == true)
 			{
@@ -230,15 +259,25 @@ namespace Example
 				}
 			}
 
-            //測試用,之後要改到動畫邏輯內
+            /*//測試用,之後要改到動畫邏輯內
             //切換移動狀態：用於動畫及隱身功能切換(走路)
             if (GameManager.Instance.Runner.GameMode == GameMode.Host)
-				if(Input.FixedInput.Walk && !Input.FixedInput.Sprint && Input.WasActivated(EGameplayInputAction.Jump) == false)
-                    if (GameManager.Instance.playerDict.TryGetValue(Object.InputAuthority, out PlayerNetworkData playerNetworkData)&& playerNetworkData.isInvisibility)
+				if((Input.FixedInput.Walk && !Input.FixedInput.Sprint && Input.WasActivated(EGameplayInputAction.Jump) == false))
+                    if (GameManager.Instance.playerDict.TryGetValue(Object.InputAuthority, out PlayerNetworkData playerNetworkData))
 					{
-						playerNetworkData.SetAniType_RPC(AnimationType.Walk);
-                        //Debug.Log(playerNetworkData.aniType);
+						playerNetworkData.SetMoveAniType_RPC(MoveAniType.Walk);
+                        //Debug.Log(playerNetworkData.moveAniType);
                     }
+
+            //測試用,之後要改到動畫邏輯內
+            //切換移動狀態：用於動畫及隱身功能切換(待機)
+            if (GameManager.Instance.Runner.GameMode == GameMode.Host)
+                if (!Input.FixedInput.Walk && Input.WasActivated(EGameplayInputAction.Jump) == false)
+                    if (GameManager.Instance.playerDict.TryGetValue(Object.InputAuthority, out PlayerNetworkData playerNetworkData)&& playerNetworkData.moveAniType!= MoveAniType.Idle)
+                    {
+                        playerNetworkData.SetMoveAniType_RPC(MoveAniType.Idle);
+                        //Debug.Log(playerNetworkData.moveAniType);
+                    }*/
         }
 
 		// 2.
@@ -269,47 +308,61 @@ namespace Example
 
             if (GameManager.Instance.Runner.GameMode == GameMode.Host)
             {
-				//攻擊功能
-                if (Input.WasActivated(EGameplayInputAction.LMB) == true)
-                {
-                    weaponCol.gameObject.SetActive(true);
+				if (GameManager.Instance.playerDict.TryGetValue(Object.InputAuthority, out PlayerNetworkData playerNetworkData)&& playerNetworkData.actionAniType == ActionAniType.None)
+				{
+                    //攻擊功能
+                    if (Input.WasActivated(EGameplayInputAction.LMB) == true)
+                    {
+						CustomEventHandler.CallPlayerAttackEvent(playerNetworkData);
 
-                    var centerPos = new Vector3((colEndPos.x - colStartPos.x) / 2, (colEndPos.y - colStartPos.y) / 2, (colEndPos.z - colStartPos.z) / 2);
-                    var colliders = Physics.OverlapSphere(transform.position+ centerPos, colRadius, 1 << LayerMask.NameToLayer("Attackcol"));
-                    //Debug.Log(colliders[0] + "："+colliders.Length);
+                        var centerPos = new Vector3((colEndPos.x - colStartPos.x) / 2, (colEndPos.y - colStartPos.y) / 2, (colEndPos.z - colStartPos.z) / 2);
+                        var colliders = Physics.OverlapSphere(transform.position + centerPos, colRadius, 1 << LayerMask.NameToLayer("Attackcol"));
+                        //Debug.Log(colliders[0] + "："+colliders.Length);
 
-					if(colliders.Length > 1)
-					{
-                        foreach (var collider in colliders)
+                        if (colliders.Length > 1)
                         {
-                            if (collider.TryGetComponent(out NetworkObject hurtPlayer)&& hurtPlayer.InputAuthority!=Object.InputAuthority)
+                            foreach (var collider in colliders)
                             {
-                                //Debug.Log(localPlayer.InputAuthority);
-                                //Debug.Log(localPlayer.StateAuthority);
+                                if (collider.TryGetComponent(out NetworkObject hurtPlayer) && hurtPlayer.InputAuthority != Object.InputAuthority)
+                                {
+                                    //Debug.Log(localPlayer.InputAuthority);
+                                    //Debug.Log(localPlayer.StateAuthority);
 
-                                if (GameManager.Instance.playerDict.TryGetValue(hurtPlayer.InputAuthority, out PlayerNetworkData hurtPlayerNetworkData))
-								{
-									if (hurtPlayerNetworkData.hp == 1)
-									{
-										if (GameManager.Instance.playerDict.TryGetValue(Object.InputAuthority, out PlayerNetworkData playerNetworkData))
-                                            playerNetworkData.SetDead_RPC(false,hurtPlayerNetworkData.clothes);
+                                    if (GameManager.Instance.playerDict.TryGetValue(hurtPlayer.InputAuthority, out PlayerNetworkData hurtPlayerNetworkData))
+                                    {
+                                        if (hurtPlayerNetworkData.hp == 1)
+                                        {
+                                            playerNetworkData.SetDead_RPC(false, hurtPlayerNetworkData.clothes);
 
-										hurtPlayerNetworkData.SetDead_RPC(true,ClothesName.None);
-									}
-									else
-									{
-                                        hurtPlayerNetworkData.TakeDamage_RPC(1);
-                                        hurtPlayerNetworkData.SetIsHurt_RPC(true);
+                                            hurtPlayerNetworkData.SetDead_RPC(true, ClothesName.None);
+                                        }
+                                        else
+                                        {
+                                            hurtPlayerNetworkData.TakeDamage_RPC(1);
+                                            hurtPlayerNetworkData.SetIsHurt_RPC(true);
+                                        }
                                     }
                                 }
-                            }
 
-                            Debug.Log(collider + "/" + collider.GetComponent<NetworkObject>().InputAuthority + "：" + colliders.Length);
+                                Debug.Log(collider + "/" + collider.GetComponent<NetworkObject>().InputAuthority + "：" + colliders.Length);
+                            }
+                        }
+
+                        Debug.Log("Attack");
+                    }
+
+                    //拾取功能
+                    if (Input.WasActivated(EGameplayInputAction.PickUp) == true)
+                    {
+                        var colliders = Physics.OverlapCapsule(gameObject.transform.position + colStartPos, gameObject.transform.position + colEndPos, colRadius, 1 << LayerMask.NameToLayer("WeaponProp"));
+                        Debug.Log(colliders.Length);
+
+                        if (colliders.Length != 0 && colliders[0].transform.TryGetComponent(out WeaponProp weaponProp))
+                        {
+                            weaponProp.PickUpWeapon(Object);
+                            Debug.Log("PickUp");
                         }
                     }
-                    
-                    weaponCol.gameObject.SetActive(false);
-                    Debug.Log("Attack");
                 }
 
                 if (Input.WasActivated(EGameplayInputAction.RMB) == true)
@@ -325,24 +378,11 @@ namespace Example
 				//隱身功能
                 if (Input.WasActivated(EGameplayInputAction.Invisibility) == true)
                 {
-                    if (GameManager.Instance.playerDict.TryGetValue(Object.InputAuthority, out PlayerNetworkData playerNetworkData)&& playerNetworkData.isDead == false && playerNetworkData.isInvisibility==false)
+                    if (playerNetworkData.isDead == false && playerNetworkData.isInvisibility==false)
 					{
                         playerNetworkData.SetInvisibility_RPC(true);
 
                         Debug.Log("Invisibility");
-                    } 
-                }
-
-                //拾取功能
-                if (Input.WasActivated(EGameplayInputAction.PickUp) == true)
-                {
-                    var colliders = Physics.OverlapCapsule(gameObject.transform.position+colStartPos, gameObject.transform.position + colEndPos, colRadius, 1 << LayerMask.NameToLayer("Weapon"));
-                    Debug.Log(colliders.Length);
-
-                    if (colliders.Length!=0 && colliders[0].transform.parent.TryGetComponent(out WeaponProp weaponProp))
-                    {
-                        weaponProp.PickUpWeapon(Object);
-                        Debug.Log("PickUp");
                     } 
                 }
             }

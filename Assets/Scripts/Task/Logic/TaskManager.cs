@@ -17,6 +17,7 @@ public class TaskManager : Singleton<TaskManager>
     private TaskNetworkData taskNetworkData = null;
     private int clothesCount;
     private float clothesProbability;
+    private HashSet<FeatureName> postedFeatureList = new HashSet<FeatureName>();
 
     private void Start()
     {
@@ -30,6 +31,7 @@ public class TaskManager : Singleton<TaskManager>
         CustomEventHandler.SetClothesEvent += OnSetClothesEvent;
         CustomEventHandler.TaskUpdateEvent += OnTaskUpdateEvent;
         CustomEventHandler.CheckTargetEvent += OnCheckTargetEvent;
+        CustomEventHandler.PlayerRebornEvent += OnPlayerRebornEvent;
         CustomEventHandler.RemakeRoundEvent += OnRemakeRoundEvent;
     }
 
@@ -39,6 +41,7 @@ public class TaskManager : Singleton<TaskManager>
         CustomEventHandler.SetClothesEvent -= OnSetClothesEvent;
         CustomEventHandler.TaskUpdateEvent -= OnTaskUpdateEvent;
         CustomEventHandler.CheckTargetEvent -= OnCheckTargetEvent;
+        CustomEventHandler.PlayerRebornEvent -= OnPlayerRebornEvent;
         CustomEventHandler.RemakeRoundEvent -= OnRemakeRoundEvent;
     }
 
@@ -72,13 +75,20 @@ public class TaskManager : Singleton<TaskManager>
     {
         if (clothesData.GetClothesDetails(clothesName).featureList.Contains(task))
         {
-            foreach (var playerNetworkData in gameManager.playerDict.Values)
-                playerNetworkData.SetRemakeRound_RPC(true);
+            //適用於玩家殺對目標就重製回合
+            /*foreach (var playerNetworkData in gameManager.playerDict.Values)
+                playerNetworkData.SetRemakeRound_RPC(true);*/
 
             return true;
         }
         else
             return false;
+    }
+
+    //玩家重生事件
+    private void OnPlayerRebornEvent(PlayerRef playerRef)
+    {
+        RemakeTaskDict();
     }
 
     //重製回合事件
@@ -191,12 +201,16 @@ public class TaskManager : Singleton<TaskManager>
                 {
                     var featureList = clothesData.GetClothesDetails(playerNetworkData.clothes).featureList;
 
-                    while (taskNetworkData.changeTaskDict[taskNetworkData.changeTaskList[pointNum = AlgorithmManager.Instance.ChooseResult(taskProbability, taskNetworkData.changeTaskDict.Count)]] == 1 && featureList.Contains(taskNetworkData.changeTaskList[pointNum]))
+                    while (postedFeatureList.Contains(taskNetworkData.changeTaskList[pointNum = AlgorithmManager.Instance.ChooseResult(taskProbability, taskNetworkData.changeTaskDict.Count)]) || (taskNetworkData.changeTaskDict[taskNetworkData.changeTaskList[pointNum]] == 1
+                        && featureList.Contains(taskNetworkData.changeTaskList[pointNum])))
                         continue;
 
                     playerNetworkData.SetTask_RPC(taskNetworkData.changeTaskList[pointNum]);
+                    postedFeatureList.Add(taskNetworkData.changeTaskList[pointNum]);
                 }
             }
+
+            postedFeatureList.Clear();
         }    
     }
 }

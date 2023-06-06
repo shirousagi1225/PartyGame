@@ -70,7 +70,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _interpolationDataSource: 0
-  maxHp: 3
+  maxHp: 5
+  HPRefreshRate: 0.75
+  maxSp: 100
+  SPReductionRate: 0.01
+  SPRecoveryRate: 0.01
+  SPRefreshRate: 0.1
   invisibilityTime: 10
   invisibilityCDTime: 10
   invisibilityStiffTime: 0
@@ -79,7 +84,12 @@ MonoBehaviour:
   _playerName: 
   _isReady:
     _value: 0
+  _isInitData:
+    _value: 0
+  _isRemakeRound:
+    _value: 0
   _hp: 0
+  _sp: 0
   _isHurt:
     _value: 0
   _clothes: 0
@@ -87,4 +97,6 @@ MonoBehaviour:
   _weapon: 0
   _aniType: 0
   _isInvisibility:
+    _value: 0
+  _isDead:
     _value: 0

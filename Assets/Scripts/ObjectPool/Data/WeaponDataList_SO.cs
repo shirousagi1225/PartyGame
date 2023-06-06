@@ -18,6 +18,6 @@ public class WeaponDetails
 {
     public WeaponName weaponName;
     public GameObject weaponProp;
-    public GameObject weapon;
+    //public GameObject weapon;
     public Sprite weaponSprite;
 }

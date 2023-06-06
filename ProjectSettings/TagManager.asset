@@ -13,8 +13,8 @@ TagManager:
   - UI
   - Weapon
   - Attackcol
-  - 
-  - 
+  - WeaponProp
+  - MiniMapIcon
   - 
   - 
   - 
@@ -40,4 +40,10 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Item
+    uniqueID: 1191059699
+    locked: 0
+  - name: Player
+    uniqueID: 3101089013
     locked: 0

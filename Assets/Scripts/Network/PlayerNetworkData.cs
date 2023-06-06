@@ -8,27 +8,39 @@ using System.Threading.Tasks;
 
 public class PlayerNetworkData : NetworkBehaviour
 {
-    [Header("玩家設置")]
-    [SerializeField] private PlayerRef playerRef;
-    [SerializeField] private int maxHp;
+    [Header("玩家設置(可更改)")]
+    public PlayerRef playerRef;
+
+    [SerializeField] private float maxHp;
+    [SerializeField] private float HPRefreshRate;
+
+    [SerializeField] private float maxSp;
+    [SerializeField] private float SPReductionRate;
+    [SerializeField] private float SPRecoveryRate;
+    [SerializeField] private float SPRefreshRate;
 
     [SerializeField] private float invisibilityTime;
     [SerializeField] private float invisibilityCDTime;
     [SerializeField] private float invisibilityStiffTime;
 
+    [Header("玩家設置(不可更改)")]
     public VisualEffect[] VFXs;
     public Material[] materials;
+    public Animator playerAni;
 
     [Networked(OnChanged = nameof(OnPlayerNameChanged))] public string playerName { get; set; }
     [Networked(OnChanged = nameof(OnIsReadyChanged))] public NetworkBool isReady { get; set; }
     [Networked] public NetworkBool isInitData { get; set; }
     [Networked(OnChanged = nameof(OnRemakeRoundChanged))] public NetworkBool isRemakeRound { get; set; }
-    [Networked(OnChanged = nameof(OnHpChanged))] public int hp { get; set; }
+    [Networked(OnChanged = nameof(OnHpChanged))] public float hp { get; set; }
+    [Networked] public float sp { get; set; }
     [Networked] public NetworkBool isHurt { get; set; }
+    [Networked] public NetworkBool isAttack { get; set; }
     [Networked(OnChanged = nameof(OnClothesChanged))] public ClothesName clothes { get; set; }
     [Networked(OnChanged = nameof(OnTaskChanged))] public FeatureName task { get; set; }
     [Networked(OnChanged = nameof(OnWeaponChanged))] public WeaponName weapon { get; set; }
-    [Networked(OnChanged = nameof(OnAniTypeChanged))] public AnimationType aniType { get; set; }
+    [Networked(OnChanged = nameof(OnMoveAniTypeChanged))] public MoveAniType moveAniType { get; set; }
+    [Networked(OnChanged = nameof(OnActionAniTypeChanged))] public ActionAniType actionAniType { get; set; }
     [Networked(OnChanged = nameof(OnInvisibilityChanged))] public NetworkBool isInvisibility { get; set; }
     [Networked(OnChanged = nameof(OnDeadChanged))] public NetworkBool isDead { get; set; }
 
@@ -37,6 +49,8 @@ public class PlayerNetworkData : NetworkBehaviour
         transform.SetParent(GameManager.Instance.transform);
         playerRef = Object.InputAuthority;
         GameManager.Instance.playerDict.Add(Object.InputAuthority,this);
+
+        sp = maxSp;
 
         if (Object.HasStateAuthority)
         {
@@ -75,15 +89,36 @@ public class PlayerNetworkData : NetworkBehaviour
     }
 
     [Rpc(sources: RpcSources.StateAuthority, targets: RpcTargets.StateAuthority)]
-    public void TakeDamage_RPC(int damage)
+    public void TakeDamage_RPC(float damage)
     {
         hp -= damage;
+
+        if (hp < 0)
+            hp = 0;
+    }
+
+    [Rpc(sources: RpcSources.InputAuthority, targets: RpcTargets.StateAuthority)]
+    public void SetSP_RPC(float variation)
+    {
+        sp += variation;
+
+        if (sp > maxSp)
+            sp = maxSp;
+
+        if(sp<0)
+            sp = 0;
     }
 
     [Rpc(sources: RpcSources.StateAuthority, targets: RpcTargets.StateAuthority)]
     public void SetIsHurt_RPC(bool value)
     {
         isHurt = value;
+    }
+
+    [Rpc(sources: RpcSources.StateAuthority, targets: RpcTargets.StateAuthority)]
+    public void SetIsAttack_RPC(bool value)
+    {
+        isAttack = value;
     }
 
     [Rpc(sources: RpcSources.StateAuthority, targets: RpcTargets.StateAuthority)]
@@ -105,9 +140,15 @@ public class PlayerNetworkData : NetworkBehaviour
     }
 
     [Rpc(sources: RpcSources.StateAuthority, targets: RpcTargets.StateAuthority)]
-    public void SetAniType_RPC(AnimationType aniType)
+    public void SetMoveAniType_RPC(MoveAniType aniType)
     {
-        this.aniType = aniType;
+        moveAniType = aniType;
+    }
+
+    [Rpc(sources: RpcSources.StateAuthority, targets: RpcTargets.StateAuthority)]
+    public void SetActionAniType_RPC(ActionAniType aniType)
+    {
+        actionAniType = aniType;
     }
 
     [Rpc(sources: RpcSources.StateAuthority, targets: RpcTargets.StateAuthority)]
@@ -146,11 +187,11 @@ public class PlayerNetworkData : NetworkBehaviour
 
     private static void OnHpChanged(Changed<PlayerNetworkData> changed)
     {
-        if (changed.Behaviour.hp == changed.Behaviour.maxHp)
-            return;
+        /*if (changed.Behaviour.hp == changed.Behaviour.maxHp)
+            return;*/
 
         if (GameManager.Instance.playerDict[GameManager.Instance.Runner.LocalPlayer].playerName == changed.Behaviour.playerName)
-            CustomEventHandler.CallStateUIUpdateEvent(changed.Behaviour.hp, WeaponName.None);
+            CustomEventHandler.CallHPUIUpdateEvent(changed.Behaviour.maxHp, changed.Behaviour.HPRefreshRate);
 
         if (changed.Behaviour.hp == 0)
         {
@@ -177,9 +218,30 @@ public class PlayerNetworkData : NetworkBehaviour
             CustomEventHandler.CallStateUIUpdateEvent(-1, changed.Behaviour.weapon);
     }
 
-    private static void OnAniTypeChanged(Changed<PlayerNetworkData> changed)
+    private static void OnMoveAniTypeChanged(Changed<PlayerNetworkData> changed)
     {
-        RendererManager.Instance.HeatDistortionCtrl(changed.Behaviour.VFXs, changed.Behaviour.aniType);
+        if(changed.Behaviour.moveAniType==MoveAniType.Jump)
+            CustomEventHandler.CallSetJumpAniEvent(GameManager.Instance.gameNetworkData.playerDict[changed.Behaviour.playerRef].transform, changed.Behaviour.playerAni);
+
+        if (GameManager.Instance.playerDict[GameManager.Instance.Runner.LocalPlayer].playerName == changed.Behaviour.playerName)
+        {
+            changed.LoadOld();
+
+            var oldAniType = changed.Behaviour.moveAniType;
+
+            changed.LoadNew();
+
+            CustomEventHandler.CallSPUIUpdateEvent(oldAniType,changed.Behaviour.moveAniType, changed.Behaviour.maxSp, changed.Behaviour.SPReductionRate
+                , changed.Behaviour.SPRecoveryRate, changed.Behaviour.SPRefreshRate);
+        }
+
+        CustomEventHandler.CallSetMoveAniEvent(changed.Behaviour, changed.Behaviour.playerAni, changed.Behaviour.moveAniType);
+    }
+
+    private static void OnActionAniTypeChanged(Changed<PlayerNetworkData> changed)
+    {
+        if(changed.Behaviour.actionAniType!=ActionAniType.None)
+            CustomEventHandler.CallSetActionAniEvent(changed.Behaviour, changed.Behaviour.playerAni, changed.Behaviour.actionAniType);
     }
 
     private static void OnInvisibilityChanged(Changed<PlayerNetworkData> changed)
@@ -198,14 +260,21 @@ public class PlayerNetworkData : NetworkBehaviour
     private void RemakeData()
     {
         hp = maxHp;
+        sp = maxSp;
         isHurt=false;
         weapon = WeaponName.Fist;
+        moveAniType = MoveAniType.None;
+        actionAniType=ActionAniType.None;
         isDead = false;
 
-        if (GameManager.Instance.Runner.LocalPlayer == playerRef)
+        if (GameManager.Instance.Runner.GameMode == GameMode.Host)
+            CustomEventHandler.CallPlayerRebornEvent(playerRef);
+
+        //適用於玩家殺對目標就重製回合
+        /*if (GameManager.Instance.Runner.LocalPlayer == playerRef)
         {
             if(GameManager.Instance.Runner.GameMode == GameMode.Host)
                 CustomEventHandler.CallRemakeRoundEvent();
-        }
+        }*/
     }
 }

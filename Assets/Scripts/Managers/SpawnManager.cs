@@ -36,6 +36,7 @@ public class SpawnManager : MonoBehaviour, INetworkRunnerCallbacks
     {
         CustomEventHandler.PlayerStiffEvent += OnPlayerStiffEvent;
         CustomEventHandler.PlayerDeadEvent += OnPlayerDeadEvent;
+        CustomEventHandler.PlayerRebornEvent += OnPlayerRebornEvent;
         CustomEventHandler.RemakeRoundEvent += OnRemakeRoundEvent;
     }
 
@@ -43,6 +44,7 @@ public class SpawnManager : MonoBehaviour, INetworkRunnerCallbacks
     {
         CustomEventHandler.PlayerStiffEvent -= OnPlayerStiffEvent;
         CustomEventHandler.PlayerDeadEvent -= OnPlayerDeadEvent;
+        CustomEventHandler.PlayerRebornEvent -= OnPlayerRebornEvent;
         CustomEventHandler.RemakeRoundEvent -= OnRemakeRoundEvent;
     }
 
@@ -61,7 +63,11 @@ public class SpawnManager : MonoBehaviour, INetworkRunnerCallbacks
             if (isStiff)
                 gameManager.gameNetworkData.playerDict[playerRef].GetComponent<ThirdPersonPlayer>().SpeedMultiplier = 0f;
             else
+            {
                 gameManager.gameNetworkData.playerDict[playerRef].GetComponent<ThirdPersonPlayer>().SpeedMultiplier = defSpeedMultiplier;
+
+                gameManager.playerDict[playerRef].SetActionAniType_RPC(ActionAniType.None);
+            }     
         }
     }
 
@@ -70,6 +76,12 @@ public class SpawnManager : MonoBehaviour, INetworkRunnerCallbacks
     {
         if (gameManager.Runner.GameMode == GameMode.Host)
             DespawnPlayer(playerRef);
+    }
+
+    //玩家重生事件
+    private void OnPlayerRebornEvent(PlayerRef playerRef)
+    {
+        SpawnPlayer(playerRef);
     }
 
     //重製回合事件
@@ -98,7 +110,7 @@ public class SpawnManager : MonoBehaviour, INetworkRunnerCallbacks
         SpawnAllPlayersStart();
     }
 
-    //生成玩家
+    //生成玩家(遊戲開始時)
     //有待修正：目前因物件生成皆是在主機端統一生成,因此造成客戶端無法使用物件池功能,導致每次回合重置客戶端都會在生成一批物件,而不是從物件池取出
     private async void SpawnAllPlayersStart()
     {
@@ -148,7 +160,21 @@ public class SpawnManager : MonoBehaviour, INetworkRunnerCallbacks
             isStartGame = true;
         }
     }
-            
+
+    //生成玩家(玩家死亡後)
+    private void SpawnPlayer(PlayerRef playerRef)
+    {
+        int pointNum = UnityEngine.Random.Range(0, playerSpawnPointList.Count);
+
+        NetworkObject networkPlayerObject;
+
+        networkPlayerObject = gameManager.Runner.Spawn(playerPrefab, playerSpawnPointList[pointNum].position, Quaternion.identity, playerRef);
+
+        gameManager.Runner.SetPlayerObject(playerRef, networkPlayerObject);
+        gameManager.gameNetworkData.SetPlayerDict_RPC(playerRef, networkPlayerObject);
+
+        Debug.Log("玩家" + playerRef + "：" + gameManager.gameNetworkData.playerDict[playerRef] + gameManager.gameNetworkData.playerDict.Count);
+    }
 
     //移除玩家(玩家死亡時)
     private void DespawnPlayer(PlayerRef playerRef)
@@ -158,6 +184,8 @@ public class SpawnManager : MonoBehaviour, INetworkRunnerCallbacks
             gameManager.Runner.Despawn(gameManager.gameNetworkData.playerDict[playerRef]);
             gameManager.gameNetworkData.playerDict.Remove(playerRef);
         }
+
+        gameManager.playerDict[playerRef].SetRemakeRound_RPC(true);
     }
 
     //移除全部玩家(重製回合時)

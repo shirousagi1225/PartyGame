@@ -2,19 +2,19 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ObjectPool<T> where T : MonoBehaviour
+public class ObjectPool_test<T> where T : MonoBehaviour
 {
     private Queue<T> _objectQueue;
     private GameObject _prefab;
 
-    private static ObjectPool<T> instance = null;
+    private static ObjectPool_test<T> instance = null;
 
-    public static ObjectPool<T> Instance
+    public static ObjectPool_test<T> Instance
     {
         get
         {
             if (instance == null)
-                instance = new ObjectPool<T>();
+                instance = new ObjectPool_test<T>();
             return instance;
         }
     }

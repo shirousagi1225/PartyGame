@@ -132,15 +132,63 @@ public static class CustomEventHandler
         StateUIUpdateEvent?.Invoke(hp, weapon);
     }
 
+    public static event Action<float, float> HPUIUpdateEvent;
+    public static void CallHPUIUpdateEvent(float maxHp, float HPRefreshRate)
+    {
+        HPUIUpdateEvent?.Invoke(maxHp, HPRefreshRate);
+    }
+
+    public static event Action<MoveAniType, MoveAniType,float, float, float,float> SPUIUpdateEvent;
+    public static void CallSPUIUpdateEvent(MoveAniType oldAniType, MoveAniType newAniType, float maxSp, float SPReductionRate, float SPRecoveryRate,float SPRefreshRate)
+    {
+        SPUIUpdateEvent?.Invoke(oldAniType, newAniType, maxSp, SPReductionRate, SPRecoveryRate, SPRefreshRate);
+    }
+
+    public static event Action<SkillType,bool, float, float> SkillUIUpdateEvent;
+    public static void CallSkillUIUpdateEvent(SkillType skillType, bool skillState, float skillTime, float skillCDTime)
+    {
+        SkillUIUpdateEvent?.Invoke(skillType, skillState, skillTime, skillCDTime);
+    }
+
     public static event Action<PlayerRef> PlayerDeadEvent;
     public static void CallPlayerDeadEvent(PlayerRef playerRef)
     {
         PlayerDeadEvent?.Invoke(playerRef);
     }
 
+    public static event Action<PlayerRef> PlayerRebornEvent;
+    public static void CallPlayerRebornEvent(PlayerRef playerRef)
+    {
+        PlayerRebornEvent?.Invoke(playerRef);
+    }
+
     public static event Action<PlayerRef,bool> PlayerStiffEvent;
     public static void CallPlayerStiffEvent(PlayerRef playerRef, bool isStiff)
     {
         PlayerStiffEvent?.Invoke(playerRef, isStiff);
+    }
+
+    public static event Action<PlayerNetworkData> PlayerAttackEvent;
+    public static void CallPlayerAttackEvent(PlayerNetworkData playerNetworkData)
+    {
+        PlayerAttackEvent?.Invoke(playerNetworkData);
+    }
+
+    public static event Action<PlayerNetworkData, Animator, MoveAniType> SetMoveAniEvent;
+    public static void CallSetMoveAniEvent(PlayerNetworkData playerNetworkData,Animator playerAni, MoveAniType moveAniType)
+    {
+        SetMoveAniEvent?.Invoke(playerNetworkData,playerAni, moveAniType);
+    }
+
+    public static event Action<Transform, Animator> SetJumpAniEvent;
+    public static void CallSetJumpAniEvent(Transform playerTran, Animator playerAni)
+    {
+        SetJumpAniEvent?.Invoke(playerTran, playerAni);
+    }
+
+    public static event Action<PlayerNetworkData,Animator, ActionAniType> SetActionAniEvent;
+    public static void CallSetActionAniEvent(PlayerNetworkData playerNetworkData, Animator playerAni, ActionAniType actionAniType)
+    {
+        SetActionAniEvent?.Invoke(playerNetworkData,playerAni, actionAniType);
     }
 }

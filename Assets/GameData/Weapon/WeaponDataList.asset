@@ -15,20 +15,16 @@ MonoBehaviour:
   weaponDetailsList:
   - weaponName: 1
     weaponProp: {fileID: 0}
-    weapon: {fileID: 0}
-    weaponSprite: {fileID: 897639442, guid: bf96c5e9820d1e04eb9aa7aa6f5098d6, type: 3}
+    weaponSprite: {fileID: 511540770, guid: bf96c5e9820d1e04eb9aa7aa6f5098d6, type: 3}
   - weaponName: 2
     weaponProp: {fileID: 3448078300665542871, guid: 454ceffd4554b5b40a62e9993688977e,
       type: 3}
-    weapon: {fileID: 779861347503352956, guid: f9b686214a2b0894cabb982df6151fc6, type: 3}
     weaponSprite: {fileID: 1942501463, guid: a6a03e47ad116c044964daa80c93649f, type: 3}
   - weaponName: 3
     weaponProp: {fileID: 3448078300665542871, guid: ba9e550ed4ab5f9438326b4b45da789d,
       type: 3}
-    weapon: {fileID: 4208028216754225430, guid: 3fc095f7ef056ca4ea157f19161fbeae,
-      type: 3}
     weaponSprite: {fileID: 286627046, guid: a6a03e47ad116c044964daa80c93649f, type: 3}
   - weaponName: 4
-    weaponProp: {fileID: 0}
-    weapon: {fileID: 0}
+    weaponProp: {fileID: 3448078300665542871, guid: b20d9b66eb094bc4aa5000da93e77b44,
+      type: 3}
     weaponSprite: {fileID: 1909329387, guid: a6a03e47ad116c044964daa80c93649f, type: 3}
